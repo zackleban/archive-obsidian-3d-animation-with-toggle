@@ -301,9 +301,15 @@ export class GraphScene {
 
 	private countThrough(day: number) {
 		const notes = this.graph!.notes;
-		let n = 0;
-		while (n < notes.length && notes[n].day <= day) n++;
-		return n;
+		// buildGraph orders notes by day; find the end of the whole birth batch.
+		let low = 0;
+		let high = notes.length;
+		while (low < high) {
+			const mid = low + Math.floor((high - low) / 2);
+			if (notes[mid].day <= day) low = mid + 1;
+			else high = mid;
+		}
+		return low;
 	}
 
 	private loop = () => {

@@ -1,0 +1,25 @@
+✔ creation-day work is bounded per query: 1000 notes, 100 days, 2400 frames (14.848834ms)
+ℹ {"notes":1000,"days":100,"queries":2400,"totalReads":23904,"maxReads":10,"perQueryBound":10,"exactCounts":true}
+✔ creation-day work is bounded per query: 10000 notes, 100 days, 2400 frames (127.019ms)
+ℹ {"notes":10000,"days":100,"queries":2400,"totalReads":32064,"maxReads":14,"perQueryBound":14,"exactCounts":true}
+✔ empty: exact finite boundaries, fractional, repeated and backward queries (0.153375ms)
+✔ singleton: exact finite boundaries, fractional, repeated and backward queries (0.0665ms)
+✔ same day: exact finite boundaries, fractional, repeated and backward queries (0.14325ms)
+✔ gapped batches: exact finite boundaries, fractional, repeated and backward queries (0.047209ms)
+✔ finite extremes: exact finite boundaries, fractional, repeated and backward queries (0.039875ms)
+✔ actual buildGraph supplies day/path ordering without scene reordering (5.604042ms)
+✔ actual playback ordinary batches exactly match legacy cutoffs (5.983417ms)
+✔ actual playback skipped-day batches exactly match legacy cutoffs (1.369416ms)
+✔ play, complete, replay and replace: days [] (3.862833ms)
+✔ play, complete, replay and replace: days [1] (1.172791ms)
+✔ play, complete, replay and replace: days [1,1,1] (1.033541ms)
+✔ play, complete, replay and replace: days [1,200] (0.862958ms)
+✔ play, complete, replay and replace: days [1,1000] (0.987417ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.648333

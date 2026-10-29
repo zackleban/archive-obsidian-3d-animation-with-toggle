@@ -1,6 +1,6 @@
 # Local review checklist
 
-Latest local checkpoint: [Content and saved ordering REVIEW — 2026-10-29](#content-and-saved-ordering-review--2026-10-29). Earlier entries below remain dated history.
+Latest local checkpoint: [Bounded creation-day lookup — 2026-10-29](#bounded-creation-day-lookup--2026-10-29). Earlier entries below remain dated history.
 
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
@@ -272,3 +272,45 @@ PYREPLAY
 ```
 
 Expected baseline exit 1 (four failures); omit the source override for candidate exit 0. The imported platform/runtime dependencies are explicitly supplied by the existing loader, so no temporary dependency installation is needed. Production `main.js` SHA-256: `557b6ee068bd7b324fc1ab6715733b31b4eeb349a113a02a304112609e31c155`.
+
+## Bounded creation-day lookup — 2026-10-29
+
+agent decision 2026-10-28: replace only the per-frame prefix scan with upper-bound binary search, because actual-source counters confirm repeated creation-day reads and `buildGraph` already sorts notes by day then path. One editing owner and a parallel read-only reviewer used the Mac source/test toolchain. No persistent date index, scene sorting, date conversion or new invalid-date policy is introduced.
+
+`countThrough` returns the first index with day greater than the query, or N when all qualify. Each iteration halves the remaining interval; at most floor(log2(N)) + 1 day reads for N > 0, zero for empty notes, with O(1) extra space and no lifecycle maintenance. The existing <= comparison includes an entire same-day batch. Playback still starts at day 1, uses ceil(elapsed/runMs × days) bounded as before, and takes 60 ms/day clamped to 8–40 seconds. `grow` still admits the whole cutoff in one batch before advancing `alive`; skipped-day births cannot influence other births in that batch. No adjacency, force parameters/rebuilding, simulation, rendering, controls, ownership or error handling changed.
+
+### Persisted evidence and domain
+
+[Focused actual-source tests](../tests/day-lookup.test.mjs), [pre-edit baseline](../tests/evidence/day-lookup-baseline.txt), [original-source replay](../tests/evidence/day-lookup-baseline-replay.txt) and [candidate](../tests/evidence/day-lookup-candidate.txt) retain finite evidence. Before editing `3413a4a:src/scene.ts`, only the two new work-bound tests failed; all thirteen semantic controls passed and both large fixtures returned exact counts. Final original-source replay has the same **2 failures / 13 passes**; candidate **15/15 pass**. This introduces a bounded-work contract, not a correctness regression attributed to prior repairs.
+
+| Notes | Creation days | Queries | Original day reads | Candidate day reads | Original max/query | Candidate max/query |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1,000 | 100 | 2,400 | 1,214,376 | 23,904 | 1,000 | 10 |
+| 10,000 | 100 | 2,400 | 12,122,376 | 32,064 | 10,000 | 14 |
+
+Fixtures assign day floor(i / (N / 100)) + 1; queries are max(1, ceil(frame / 2399 × 100)) for frame 0–2399. Getters count actual `countThrough` day-property reads only. Fixture construction, reference filtering and result assertions run outside the counter; each query resets the counter and individually satisfies the bound. No graph build, neighbor/adjacency selection, force-prefix update, simulation, painting or rendering work is included. Test-runner durations are not timing evidence.
+
+Direct controls cover empty, singleton, all-same-day, sparse/gapped batches, before/at/after boundaries, repeats, backward queries, finite fractional boundaries and finite numeric extremes. An actual `buildGraph` control starts with unsorted synthetic files, verifies day/path order and link indexes and verifies queries leave that graph unchanged. Valid host timestamps produce finite integer creation days >= 1; actual queries are `play`'s day-1 lookup and `advance`'s finite day calculation. Fractional finite queries are also supported by the comparison even though playback requests integer days. Malformed/non-finite timestamps or note days, unsorted externally fabricated graphs, non-finite query values and invalid clocks are outside this verified domain. The builder does not validate malformed timestamps; this job makes no policy change for them.
+
+Composed controls run actual `play/load/countThrough/grow/advance/drawDay/place/show/destroy` with real installed Three math/meshes and d3-force-3d. Controlled clock/random input compares exact node positions, birth times, links, mesh/line buffers, labels and label-write counts, camera/target state, alpha, render/control call counts and completion against the legacy linear cutoff. Explicit assertions cover initial births, repeated no-birth frames, gaps, same-day batches, skipped days in one batch, prior-batch neighbor eligibility, visible counts/link activation, duration limits, completion once, replay, replacement and empty graphs. Constructor/UI/renderer/controls and scheduling are doubled; frames call actual `advance` directly. Existing actual-constructor, installed-controls and composed owner/error suites retain gesture, current-owner and lifecycle coverage. These tests do not create native WebGL or run Obsidian.
+
+Replay without altering the checkout:
+
+```sh
+python3 - <<'PYREPLAY'
+import os, pathlib, subprocess, tempfile
+with tempfile.TemporaryDirectory(prefix="graph-day-baseline-") as temp:
+    root = pathlib.Path(temp)
+    (root / "scene.ts").write_bytes(subprocess.check_output(["git", "show", "3413a4a:src/scene.ts"]))
+    (root / "node_modules").symlink_to(pathlib.Path.cwd() / "node_modules", target_is_directory=True)
+    result = subprocess.run(["node", "--test", "tests/day-lookup.test.mjs"],
+                            env={**os.environ, "GRAPH_SCENE_SOURCE": str(root / "scene.ts")})
+    raise SystemExit(result.returncode)
+PYREPLAY
+```
+
+Expected original result: exit 1, two work-bound failures/thirteen passing controls. Candidate command: `node --test tests/day-lookup.test.mjs`. Independent read-only review confirms the algorithm and focused suite; it corrected a fixture comment that overstated callback-boundary coverage. No runtime repair was needed beyond the measured lookup.
+
+Existing live WebGL/input/popout/minimum/current-version checks above stay open; mobile is unsupported. No native FPS, total playback complexity, memory benchmark or community approval claim. No app-access retry, personal-vault installation, dependency/metadata/CSS change, push, tag, release or submission.
+
+Final local verification: one `npm run qa` passes **157/157 tests** (142 retained + 15 new), zero-warning lint, TypeScript, production build and package validation. A separate in-memory esbuild invocation captured the options from the actual production config and compared exact output bytes with `main.js`; they match, with no test/JSDOM inputs. SHA-256: `cd7bdb1a09ea491f31e014e7fe46f4ab583aee2251c374e9eab13665284c7826`. Production diff matches only the cutoff change. Package and diff checks pass. No full QA repeat was needed. Environment: macOS, Node 24.22.0, npm 11.19.1; existing locked dependencies, no installation/update.

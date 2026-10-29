@@ -30756,9 +30756,14 @@ var GraphScene = class {
   }
   countThrough(day) {
     const notes = this.graph.notes;
-    let n = 0;
-    while (n < notes.length && notes[n].day <= day) n++;
-    return n;
+    let low = 0;
+    let high = notes.length;
+    while (low < high) {
+      const mid = low + Math.floor((high - low) / 2);
+      if (notes[mid].day <= day) low = mid + 1;
+      else high = mid;
+    }
+    return low;
   }
   advance() {
     if (this.destroyed) return;

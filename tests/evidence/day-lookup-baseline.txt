@@ -1,0 +1,63 @@
+✖ creation-day work is bounded per query: 1000 notes, 100 days, 2400 frames (20.516208ms)
+ℹ {"notes":1000,"days":100,"queries":2400,"totalReads":1214376,"maxReads":1000,"perQueryBound":10,"exactCounts":true}
+✖ creation-day work is bounded per query: 10000 notes, 100 days, 2400 frames (190.294958ms)
+ℹ {"notes":10000,"days":100,"queries":2400,"totalReads":12122376,"maxReads":10000,"perQueryBound":14,"exactCounts":true}
+✔ empty: exact finite boundaries, fractional, repeated and backward queries (0.182375ms)
+✔ singleton: exact finite boundaries, fractional, repeated and backward queries (0.069459ms)
+✔ same day: exact finite boundaries, fractional, repeated and backward queries (0.160833ms)
+✔ gapped batches: exact finite boundaries, fractional, repeated and backward queries (0.042042ms)
+✔ finite extremes: exact finite boundaries, fractional, repeated and backward queries (0.032875ms)
+✔ actual buildGraph supplies day/path ordering without scene reordering (5.429667ms)
+✔ actual playback ordinary batches exactly match legacy cutoffs (5.999958ms)
+✔ actual playback skipped-day batches exactly match legacy cutoffs (1.359583ms)
+✔ play, complete, replay and replace: days [] (2.556041ms)
+✔ play, complete, replay and replace: days [1] (2.738583ms)
+✔ play, complete, replay and replace: days [1,1,1] (0.805125ms)
+✔ play, complete, replay and replace: days [1,200] (0.833125ms)
+✔ play, complete, replay and replace: days [1,1000] (0.949125ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 13
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 330.896334
+
+✖ failing tests:
+
+test at tests/day-lookup.test.mjs:19:3
+✖ creation-day work is bounded per query: 1000 notes, 100 days, 2400 frames (20.516208ms)
+  AssertionError [ERR_ASSERTION]: every query is logarithmically bounded, including repeated no-birth frames
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/day-lookup.test.mjs:29:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/day-lookup.test.mjs:19:3
+✖ creation-day work is bounded per query: 10000 notes, 100 days, 2400 frames (190.294958ms)
+  AssertionError [ERR_ASSERTION]: every query is logarithmically bounded, including repeated no-birth frames
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/day-lookup.test.mjs:29:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
