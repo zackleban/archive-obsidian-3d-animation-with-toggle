@@ -8,7 +8,7 @@ Requires **desktop Obsidian 1.7.2 or newer**, the core **Graph view** plugin, an
 
 This is a local submission candidate, not a published community release. To install in a test vault:
 
-1. Run `npm ci` and `npm run qa` in this repository (Node.js 22.13+ or 24 recommended for development).
+1. Run `npm ci` and `npm run qa` in this repository (use Node.js 24.22.0, the locally verified development version).
 2. Create `<vault>/<config-dir>/plugins/three-d-animation-with-toggle/`. The config directory is normally `.obsidian`.
 3. Copy `main.js`, `manifest.json`, and `styles.css` into it.
 4. Reload Obsidian and enable **3D Animation with Toggle** under **Settings → Community plugins**.
@@ -41,6 +41,8 @@ Only Markdown notes and resolved links between them are shown. Graph filters, co
 The plugin reads local file metadata, resolved links, and folder/config-directory existence. It never modifies notes. Its `data.json` stores only the view preference. No accounts, network calls, telemetry, external fonts, or paid services are used. Rendering libraries are bundled locally.
 
 ## Development and review
+
+The locked JSDOM 30.1.3 test dependency requires Node.js `^22.22.2 || ^24.15.0 || >=26.0.0`. This development requirement does not change the plugin's declared Obsidian minimum; live compatibility still needs the checks below.
 
 - `npm run dev`: rebuild while editing.
 - `npm run lint`: official Obsidian ESLint rules and TypeScript-aware checks.
