@@ -470,7 +470,11 @@ export class GraphScene {
 			this.grabbedAt = { x: e.clientX, y: e.clientY };
 			return;
 		}
-		if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) this.el.win.clearTimeout(this.holdTimer);
+		if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) {
+			// A turn stays a turn even if the pointer returns to the press position.
+			this.downAt = null;
+			this.el.win.clearTimeout(this.holdTimer);
+		}
 		if (!this.dots || e.buttons !== 0) return;
 		const rect = this.renderer.domElement.getBoundingClientRect();
 		const hit = this.rayAt(e).intersectObject(this.dots)[0];

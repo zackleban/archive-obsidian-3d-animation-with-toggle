@@ -1,6 +1,6 @@
 # Local review checklist
 
-Latest local checkpoint: [Bounded neighbor lookup — 2026-10-29](#bounded-neighbor-lookup--2026-10-29). Earlier entries below remain dated history.
+Latest local checkpoint: [Content and saved ordering REVIEW — 2026-10-29](#content-and-saved-ordering-review--2026-10-29). Earlier entries below remain dated history.
 
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
@@ -230,3 +230,45 @@ Expected baseline exit 1 with five failures/seven passes; candidate invocation i
 This bounds only neighbor indexing/selection, not total playback work: countThrough, force-node/link prefix updates, paintDots and rendering retain their existing costs. No improved native FPS, WebGL responsiveness, total-memory benchmark, minimum-version compatibility or directory approval is claimed. Existing live WebGL/popout/input/minimum/current-version checks remain open, mobile remains unsupported, and no denied app access was retried. No dependency, metadata, CSS or license change was needed. Nothing was installed, pushed, tagged, released or submitted.
 
 Final verification on macOS, Node 24.22.0 / npm 11.19.1: one `npm run qa` passed **130/130 tests** (118 retained + 12 new), zero-warning lint, strict TypeScript, production build and package checks. A separate in-memory build with the production configuration is byte-identical to tracked `main.js`; its diff matches only the adjacency/lookup changes. `git diff --check` passes. Independent read-only review accepted source, final tests and documentation with no blocker. The first test draft had a missing fixture brace; it was corrected before recording the real baseline and required no production change. No full QA was repeated.
+
+## Content and saved ordering REVIEW — 2026-10-29
+
+agent decision 2026-10-28: accept the bounded local REVIEW only after independent read-only contract review, final verification and local commits; preserve live gates because local evidence cannot establish them.
+
+Reviewed accepted neighbor index (`c356e63`): graph-link order, first eligible prior-batch endpoint, unchanged batch boundary, replacement on show/play/refresh and release on destruction agree with installed d3's copied-link mutation contract. Deterministic and installed-simulation controls pass. Index/lookup operation counts remain separate from force rebuilding, simulation ticks, drawing, total memory and native FPS. Pending scan ownership, saved-3D startup, initialization cleanup and current-owner scheduled-frame fallback remain passing.
+
+The separate returning-drag lead from planning is corrected below; it is not a neighbor-index regression or visual redesign.
+
+Fresh `npm run qa`: **142/142 tests**, zero-warning lint, TypeScript, production build and package checks, exit 0. Graph JavaScript alone changes in this REVIEW; its in-memory production build exactly matches the tracked rebuilt asset. Authored CSS and metadata/dependencies remain unchanged.
+
+README install/build instructions, manifest/package/lock/root-lock/version-map agreement, desktop flags, runtime/development dependency classification, licenses/notices and production assets were checked against the existing locked toolchain. Node 24.22.0, npm 11.19.1; no installation or dependency update. Each QA command ran once; all seven total **746 standalone tests plus the sole 28-case shared integration suite**. The historical 734-test intake arithmetic is not a fresh pass; twelve new graph gesture cases explain the difference.
+
+Current official [plugin guidelines](https://raw.githubusercontent.com/obsidianmd/obsidian-developer-docs/main/en/Plugins/Releasing/Plugin%20guidelines.md), [developer policies](https://docs.obsidian.md/community-directory/developer-policies), [submission requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins), [manifest](https://raw.githubusercontent.com/obsidianmd/obsidian-developer-docs/main/en/Reference/Manifest.md) and [submission instructions](https://raw.githubusercontent.com/obsidianmd/obsidian-developer-docs/main/en/Plugins/Releasing/Submit%20your%20plugin.md) were rechecked. Local metadata/artifact/disclosure consistency is not blanket compliance, minimum-version compatibility, hosted-review success, name/ID availability or community approval.
+
+Existing explorer/modal/WebGL/xterm, popout, mobile where advertised, Linux and minimum/current-version gates remain open as applicable. The three older live sorting/recovery deliverables remain blocked in their original records. No blocked app-access attempt, personal-vault installation, push, tag, release or submission occurred. Working/staged/committed diff checks are part of final acceptance; commits remain local on `agent/2026-10-28`.
+
+### Returning drag correction
+
+agent decision 2026-10-28: clear click eligibility once a delivered left-press move exceeds the existing four-pixel threshold, because final-position-only classification can open a note after a returning drag. Keep the same threshold, hold/slide, double-click and fresh-press behavior. This is a separate pre-existing gesture defect; adjacency/placement code is unchanged.
+
+Before production edits, `node --test --test-reporter=tap tests/real-controls-lifecycle.test.mjs` failed **4/15** cases with eleven passing controls at `c356e63`. [Persisted baseline](../tests/evidence/drag-return-baseline.txt) and [final original-source replay](../tests/evidence/drag-return-baseline-replay.txt) both show the same four directional/diagonal returning drags opening `Synthetic/Note.md`. Candidate **15/15** passes, independently confirmed and included in final 142-test QA (130 retained plus twelve new). Trailing evidence whitespace only was normalized.
+
+The actual scene constructor, installed TrackballControls/Three/d3 and bubbling DOM events participate. Tests cover returning drags, exact/beyond-threshold release without move delivery, delivered threshold movement, fresh clicks, hold/slide/release, cancellation/right-button controls, refresh/play reset, double-click cancellation and teardown/retained open callbacks. The existing three dependency lifecycle cases remain. Renderer, hit selection, theme resolution, timers/frames, pointer capture, observer and Obsidian helpers are controlled. These single-mouse-pointer cases do not certify physical pointer routing, native gestures, touch/multipointer input, WebGL or live Obsidian behavior.
+
+Reproduce the baseline without changing the candidate checkout, from this repository:
+
+```sh
+python3 - <<'PYREPLAY'
+import os, subprocess, tempfile
+from pathlib import Path
+with tempfile.TemporaryDirectory(prefix="graph-gesture-baseline-") as directory:
+    source = Path(directory) / "scene.ts"
+    source.write_bytes(subprocess.check_output(["git", "show", "c356e63:src/scene.ts"]))
+    result = subprocess.run(
+        ["node", "--test", "--test-reporter=tap", "tests/real-controls-lifecycle.test.mjs"],
+        env={**os.environ, "SCENE_LIFECYCLE_SOURCE": str(source)})
+    raise SystemExit(result.returncode)
+PYREPLAY
+```
+
+Expected baseline exit 1 (four failures); omit the source override for candidate exit 0. The imported platform/runtime dependencies are explicitly supplied by the existing loader, so no temporary dependency installation is needed. Production `main.js` SHA-256: `557b6ee068bd7b324fc1ab6715733b31b4eeb349a113a02a304112609e31c155`.

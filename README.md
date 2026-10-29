@@ -24,7 +24,7 @@ Open the **global graph**, then close its graph-settings panel. Below the timela
 - Drag to rotate freely; scroll to zoom; right-drag to pan.
 - Double-click to zoom toward the clicked spot. Alt-double-click zooms out.
 - Hold the left button still for a quarter-second, then drag to slide the picture without rotating it.
-- Hover a dot for its note and cluster names. Click a dot to open its note.
+- Hover a dot for its note and cluster names. Click a dot to open its note. Moving more than four pixels during a left-button press cancels that click, even if the pointer returns to where it started; a fresh press can click again.
 
 The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin invalidates pending scan results and disposes its scene; filesystem reads already issued may still finish. If scene initialization or a later animation frame fails for a current pane/control owner, the plugin releases resources already acquired and restores 2D in all global graph panes. A scheduled failure from an obsolete pane/control owner releases that scene and retires its pending work without stopping independent healthy panes. A current-owner failure is reported once through the console and a notice when those channels are available. It does not automatically retry; select 3D or the cube to deliberately try again with a fresh scene.
 
@@ -46,7 +46,7 @@ The locked JSDOM 30.1.3 test dependency requires Node.js `^22.22.2 || ^24.15.0 |
 
 - `npm run dev`: rebuild while editing.
 - `npm run lint`: official Obsidian ESLint rules and TypeScript-aware checks.
-- `npm test`: bounded neighbor indexing/lookup and deterministic placement/playback comparisons, graph grouping, creation days, link deduplication, bounded folder scans, accessible controls, stale-scan rejection, 2D fallback, and actual scene initialization/teardown and scheduled-frame recovery with injected dependency failures.
+- `npm test`: drag-return/click/hold controls with installed TrackballControls, bounded neighbor indexing/lookup and deterministic placement/playback comparisons, graph grouping, creation days, link deduplication, bounded folder scans, accessible controls, stale-scan rejection, 2D fallback, and actual scene initialization/teardown and scheduled-frame recovery with injected dependency failures.
 - `npm run build`: strict TypeScript check and production bundle.
 - `npm run qa`: all checks plus manifest/package/version and artifact validation.
 

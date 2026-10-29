@@ -1,0 +1,192 @@
+Command: node --test --test-reporter=tap tests/real-controls-lifecycle.test.mjs
+Source: c356e63b3b851191b6c05a7f634cf4217c76405f (before production edits)
+Exit: 1
+
+TAP version 13
+# Subtest: actual TrackballControls connect failure releases acquired listeners and renderer
+ok 1 - actual TrackballControls connect failure releases acquired listeners and renderer
+  ---
+  duration_ms: 41.267834
+  type: 'test'
+  ...
+# Subtest: actual TrackballControls resize failure releases acquired listeners and renderer
+ok 2 - actual TrackballControls resize failure releases acquired listeners and renderer
+  ---
+  duration_ms: 7.176708
+  type: 'test'
+  ...
+# Subtest: actual TrackballControls teardown removes document listeners during an active drag
+ok 3 - actual TrackballControls teardown removes document listeners during an active drag
+  ---
+  duration_ms: 6.394333
+  type: 'test'
+  ...
+# Subtest: drag-return (12, 0) stays disqualified with installed controls
+not ok 4 - drag-return (12, 0) stays disqualified with installed controls
+  ---
+  duration_ms: 16.517959
+  type: 'test'
+  location: '/Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:192:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    returning to the press must not open a note
+    + actual - expected
+
+    + [
+    +   'Synthetic/Note.md'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'Synthetic/Note.md'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:199:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: drag-return (-12, 0) stays disqualified with installed controls
+not ok 5 - drag-return (-12, 0) stays disqualified with installed controls
+  ---
+  duration_ms: 6.840042
+  type: 'test'
+  location: '/Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:192:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    returning to the press must not open a note
+    + actual - expected
+
+    + [
+    +   'Synthetic/Note.md'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'Synthetic/Note.md'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:199:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: drag-return (0, 12) stays disqualified with installed controls
+not ok 6 - drag-return (0, 12) stays disqualified with installed controls
+  ---
+  duration_ms: 7.410042
+  type: 'test'
+  location: '/Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:192:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    returning to the press must not open a note
+    + actual - expected
+
+    + [
+    +   'Synthetic/Note.md'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'Synthetic/Note.md'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:199:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: drag-return (3, 3) stays disqualified with installed controls
+not ok 7 - drag-return (3, 3) stays disqualified with installed controls
+  ---
+  duration_ms: 7.299333
+  type: 'test'
+  location: '/Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:192:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    returning to the press must not open a note
+    + actual - expected
+
+    + [
+    +   'Synthetic/Note.md'
+    + ]
+    - []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'Synthetic/Note.md'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/real-controls-lifecycle.test.mjs:199:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: click distance 0 retains the existing threshold with installed controls
+ok 8 - click distance 0 retains the existing threshold with installed controls
+  ---
+  duration_ms: 7.15725
+  type: 'test'
+  ...
+# Subtest: click distance 4 retains the existing threshold with installed controls
+ok 9 - click distance 4 retains the existing threshold with installed controls
+  ---
+  duration_ms: 6.564875
+  type: 'test'
+  ...
+# Subtest: click distance 4.01 retains the existing threshold with installed controls
+ok 10 - click distance 4.01 retains the existing threshold with installed controls
+  ---
+  duration_ms: 7.179875
+  type: 'test'
+  ...
+# Subtest: click distance 12 retains the existing threshold with installed controls
+ok 11 - click distance 12 retains the existing threshold with installed controls
+  ---
+  duration_ms: 6.098917
+  type: 'test'
+  ...
+# Subtest: delivered threshold movement still clicks, while hold/slide/release does not
+ok 12 - delivered threshold movement still clicks, while hold/slide/release does not
+  ---
+  duration_ms: 6.206291
+  type: 'test'
+  ...
+# Subtest: cancel and right-button return never open; fresh left click remains usable
+ok 13 - cancel and right-button return never open; fresh left click remains usable
+  ---
+  duration_ms: 6.225584
+  type: 'test'
+  ...
+# Subtest: refresh/play reset presses and pending opens; double-click still cancels opening
+ok 14 - refresh/play reset presses and pending opens; double-click still cancels opening
+  ---
+  duration_ms: 6.45725
+  type: 'test'
+  ...
+# Subtest: destroy retires pending opens and retained callbacks after pointer interaction
+ok 15 - destroy retires pending opens and retained callbacks after pointer interaction
+  ---
+  duration_ms: 5.711917
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 11
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 382.517125
