@@ -1,43 +1,55 @@
 # 3D Animation with Toggle
 
-Turns a vault with several subvaults in it into a 3D animation. In the graph view's controls, right below the
-timelapse wand ("Start timelapse animation"), it adds:
+Explore the vault as a 3D graph and watch notes appear in creation-date order. Folder clusters get distinct colors, and a 2D/3D switch brings you back to Obsidian's graph.
 
-- a cube button, **Start 3D animation**: plays the vault from day one, in 3D. Notes appear on the day they were made,
-  next to a note they link to, and each subvault gathers into its own coloured cluster. The camera turns slowly and
-  backs off to keep everything in view. The top left shows `Day 12 of 40 · Sep 21, 2026 · 16 notes`.
-- a **2D / 3D** toggle: 2D is Obsidian's own graph; 3D shows the whole vault as it is now, in 3D. The choice is saved.
-  Pressing the cube from 2D flips the toggle to 3D first.
+## Requirements and installation
 
-Like the wand, both show while the graph settings panel is closed, and only in the global graph (not the local graph).
+Requires **desktop Obsidian 1.7.2 or newer**, the core **Graph view** plugin, and working WebGL. Mobile is not supported. Large graphs require more GPU and CPU work; switching back to 2D disposes the 3D scene.
 
-In 3D, drag to turn (it keeps going past the top and bottom, as freely as side to side), scroll to zoom, right-drag
-to pan. Double-click to zoom in around the spot you clicked: that spot stays under the mouse while everything closes in.
-Alt-double-click zooms back out the same way. Press and hold for a quarter second and the picture is in your hand (the
-pointer turns into a closed hand): dragging then slides it left, right, up and down, without turning it, until you let
-go. Hover a dot for the note's name and subvault; click it to open the note. The legend at the bottom left lists each subvault, its colour and how many notes it holds.
+This is a local submission candidate, not a published community release. To install in a test vault:
 
-## Subvaults
+1. Run `npm ci` and `npm run qa` in this repository (Node.js 22.13+ or 24 recommended for development).
+2. Create `<vault>/<config-dir>/plugins/three-d-animation-with-toggle/`. The config directory is normally `.obsidian`.
+3. Copy `main.js`, `manifest.json`, and `styles.css` into it.
+4. Reload Obsidian and enable **3D Animation with Toggle** under **Settings → Community plugins**.
 
-A subvault is any folder that holds its own `.obsidian` folder. A vault with none of those is split by its top-level
-folders instead. Notes outside every subvault form one group named after the vault.
+The submission ID is now `three-d-animation-with-toggle` to use only lowercase letters and hyphens. If testing an older local build in `3d-animation-with-toggle`, disable it before installing this one. Its only saved preference is 2D/3D mode; choose that mode again in the new installation. No notes need migration.
 
-## Days
+## Open and use the graph
 
-Day 1 is the day the vault's oldest note was made (the file's creation date, the same date Obsidian's own timelapse
-uses). A run takes 60 ms a day, at least 8 s and at most 40 s. Only notes (`.md`) are shown; links are the resolved
-links between them. Graph filters and groups do not apply to the 3D view.
+Open the **global graph**, then close its graph-settings panel. Below the timelapse wand are a cube button and a **2D / 3D** toggle. They are native buttons and can also be activated with the keyboard.
 
-## Install by hand
+- **3D** shows the current vault. **2D** returns to the standard graph. This preference is saved and applies to all open global graph panes.
+- The cube, **Start 3D animation**, replays the vault from its oldest note. From 2D, it switches to 3D first.
+- Drag to rotate freely; scroll to zoom; right-drag to pan.
+- Double-click to zoom toward the clicked spot. Alt-double-click zooms out.
+- Hold the left button still for a quarter-second, then drag to slide the picture without rotating it.
+- Hover a dot for its note and cluster names. Click a dot to open its note.
 
-Copy `main.js`, `manifest.json` and `styles.css` into `<your vault>/.obsidian/plugins/3d-animation-with-toggle/`, then
-turn it on under Settings, Community plugins.
+The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin cancels pending loads and disposes its scene. If WebGL initialization fails, the plugin shows a notice and restores 2D.
 
-## Build
+## Clusters and dates
 
-```
-npm install
-npm run build
-```
+A subvault is a folder containing a configuration directory with the same name as the parent vault's config directory (normally `.obsidian`). If none exist, top-level folders become clusters. Notes outside those folders share a cluster named after the vault. Nested clusters use the deepest matching folder, and full paths distinguish folders with the same name.
 
-`npm run dev` rebuilds on every save. Built with three.js and d3-force-3d (both MIT).
+Day 1 is the oldest Markdown file's creation date. Copied or restored files may have different creation dates from their original writing dates. Playback takes 60 ms per day, with a minimum of 8 seconds and maximum of 40 seconds.
+
+Only Markdown notes and resolved links between them are shown. Graph filters, core graph groups, attachments, and local graphs do not apply to this 3D view. A metadata refresh updates the graph when playback is idle; camera placement may reset when the graph changes.
+
+## Data and privacy
+
+The plugin reads local file metadata, resolved links, and folder/config-directory existence. It never modifies notes. Its `data.json` stores only the view preference. No accounts, network calls, telemetry, external fonts, or paid services are used. Rendering libraries are bundled locally.
+
+## Development and review
+
+- `npm run dev`: rebuild while editing.
+- `npm run lint`: official Obsidian ESLint rules and TypeScript-aware checks.
+- `npm test`: graph grouping, creation days, link deduplication, bounded folder scans, accessible controls, stale-load cancellation, and mocked WebGL failure handling.
+- `npm run build`: strict TypeScript check and production bundle.
+- `npm run qa`: all checks plus manifest/package/version and artifact validation.
+
+The controls attach to internal graph DOM selectors, which can change between Obsidian versions. Tests exercise data and lifecycle behavior with a mocked host; they do not certify native WebGL rendering. Real-app checks are listed in [docs/REVIEW.md](docs/REVIEW.md).
+
+## License
+
+MIT; see [LICENSE](LICENSE). Three.js, d3-force-3d, and their bundled runtime dependencies retain their MIT/ISC licenses in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), also embedded in `main.js`.
