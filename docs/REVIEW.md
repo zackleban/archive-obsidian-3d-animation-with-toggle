@@ -28,3 +28,11 @@ References checked:
 - Rapidly toggle 2D/3D, close a graph while scanning folders, replay, and disable the plugin. There must be no leftover overlay or animation.
 - Use multiple graph panes and a detached window; check resize, theme changes, and graph controls remaining clickable.
 - Check a system without WebGL, and compare GPU/CPU use before enable and after disable.
+
+## Review — 2026-10-28
+
+Agent decision, 2026-10-28: review the seven completed local preparations before adding features, because their shared explorer behavior and remaining host checks need validation.
+
+Fresh `npm run qa` passed: 10 tests, TypeScript, production build, and package checks. The existing graph/lifecycle tests, official lint configuration, build, and metadata checks still pass. No graph code changed in this review.
+
+This is automated local evidence, not a live Obsidian or minimum-version certification. The real-app checklist above remains open. Nothing was installed into the personal vault, pushed, released, or submitted.
