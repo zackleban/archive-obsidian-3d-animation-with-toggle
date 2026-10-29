@@ -1,0 +1,1264 @@
+Baseline source: 070f22ef448b7cdacd73a5f26fd25eed0f73331f
+Command: GRAPH_MAIN_SOURCE=<exported-main.ts> node --test tests/pending-scan-ownership.test.mjs
+Exit: 1
+
+✖ pending show ignores inventory removal before layout and fresh ownership works (44.395291ms)
+✖ pending play ignores inventory removal before layout and fresh ownership works (10.272042ms)
+✖ pending reject ignores inventory removal before layout and fresh ownership works (9.223084ms)
+✖ pending show ignores pane detachment before layout and fresh ownership works (9.900583ms)
+✖ pending play ignores pane detachment before layout and fresh ownership works (8.2475ms)
+✖ pending reject ignores pane detachment before layout and fresh ownership works (8.650458ms)
+✖ pending show ignores deferred pane before layout and fresh ownership works (8.1745ms)
+✖ pending play ignores deferred pane before layout and fresh ownership works (8.276667ms)
+✖ pending reject ignores deferred pane before layout and fresh ownership works (8.717541ms)
+✖ pending show ignores wand replacement before layout and fresh ownership works (11.134333ms)
+✖ pending play ignores wand replacement before layout and fresh ownership works (8.648542ms)
+✖ pending reject ignores wand replacement before layout and fresh ownership works (8.327667ms)
+✖ pending show ignores toolbar replacement before layout and fresh ownership works (7.660875ms)
+✖ pending play ignores toolbar replacement before layout and fresh ownership works (7.502209ms)
+✖ pending reject ignores toolbar replacement before layout and fresh ownership works (7.423875ms)
+✖ pending show ignores toggle removal before layout and fresh ownership works (6.950875ms)
+✖ pending play ignores toggle removal before layout and fresh ownership works (11.352792ms)
+✖ pending reject ignores toggle removal before layout and fresh ownership works (8.099542ms)
+✖ pending show ignores cube movement before layout and fresh ownership works (7.691791ms)
+✖ pending play ignores cube movement before layout and fresh ownership works (7.79075ms)
+✖ pending reject ignores cube movement before layout and fresh ownership works (8.109333ms)
+✖ pending show ignores toggle movement before layout and fresh ownership works (7.28675ms)
+✖ pending play ignores toggle movement before layout and fresh ownership works (9.50625ms)
+✖ pending reject ignores toggle movement before layout and fresh ownership works (9.629833ms)
+✖ pending show ignores option replacement before layout and fresh ownership works (8.129083ms)
+✖ pending play ignores option replacement before layout and fresh ownership works (9.442333ms)
+✖ pending reject ignores option replacement before layout and fresh ownership works (9.72775ms)
+✖ pending show ignores option movement before layout and fresh ownership works (8.776916ms)
+✖ pending play ignores option movement before layout and fresh ownership works (10.226625ms)
+✖ pending reject ignores option movement before layout and fresh ownership works (9.857833ms)
+✔ saved-3D initial attachment and new pane render (delayed adapter) (9.916041ms)
+✔ saved-3D initial attachment and new pane render (immediate adapter) (9.621875ms)
+✔ current scan failure from saved 2d restores global 2D once and deliberate retry works (12.58775ms)
+✔ current scan failure from saved 3d restores global 2D once and deliberate retry works (7.733667ms)
+✔ resolve after unload preserves current request/lifecycle (8.950792ms)
+✔ resolve after 2d preserves current request/lifecycle (11.777875ms)
+✔ resolve after reconciliation preserves current request/lifecycle (7.606625ms)
+✔ resolve after supersession preserves current request/lifecycle (8.246667ms)
+✔ reject after unload preserves current request/lifecycle (7.529584ms)
+✔ reject after 2d preserves current request/lifecycle (7.353667ms)
+✔ reject after reconciliation preserves current request/lifecycle (7.650583ms)
+✔ reject after supersession preserves current request/lifecycle (7.243417ms)
+✖ existing scene ignores pending show after ownership loss before layout (7.676083ms)
+✖ existing scene ignores pending play after ownership loss before layout (8.030708ms)
+✖ existing scene ignores pending reject after ownership loss before layout (7.534167ms)
+✔ older scan resolve after newer playback completes cannot replace or stop it (7.861167ms)
+✔ older scan reject after newer playback completes cannot replace or stop it (7.408291ms)
+✔ saved-3D initial scan failure is current after synchronous attachment finishes (7.204583ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 15
+ℹ fail 33
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 661.992709
+
+✖ failing tests:
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores inventory removal before layout and fresh ownership works (44.395291ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores inventory removal before layout and fresh ownership works (10.272042ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores inventory removal before layout and fresh ownership works (9.223084ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores pane detachment before layout and fresh ownership works (9.900583ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores pane detachment before layout and fresh ownership works (8.2475ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores pane detachment before layout and fresh ownership works (8.650458ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores deferred pane before layout and fresh ownership works (8.1745ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores deferred pane before layout and fresh ownership works (8.276667ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores deferred pane before layout and fresh ownership works (8.717541ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores wand replacement before layout and fresh ownership works (11.134333ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores wand replacement before layout and fresh ownership works (8.648542ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores wand replacement before layout and fresh ownership works (8.327667ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores toolbar replacement before layout and fresh ownership works (7.660875ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores toolbar replacement before layout and fresh ownership works (7.502209ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores toolbar replacement before layout and fresh ownership works (7.423875ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores toggle removal before layout and fresh ownership works (6.950875ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores toggle removal before layout and fresh ownership works (11.352792ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores toggle removal before layout and fresh ownership works (8.099542ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores cube movement before layout and fresh ownership works (7.691791ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores cube movement before layout and fresh ownership works (7.79075ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores cube movement before layout and fresh ownership works (8.109333ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores toggle movement before layout and fresh ownership works (7.28675ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores toggle movement before layout and fresh ownership works (9.50625ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores toggle movement before layout and fresh ownership works (9.629833ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores option replacement before layout and fresh ownership works (8.129083ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores option replacement before layout and fresh ownership works (9.442333ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores option replacement before layout and fresh ownership works (9.72775ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending show ignores option movement before layout and fresh ownership works (8.776916ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 0,
+  +       shows: 1
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending play ignores option movement before layout and fresh ownership works (10.226625ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+        },
+  +     {
+  +       destroyed: 0,
+  +       plays: 1,
+  +       shows: 0
+  +     }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:91:53
+✖ pending reject ignores option movement before layout and fresh ownership works (9.857833ms)
+  AssertionError [ERR_ASSERTION]: stale completion cannot allocate/show/play, destroy survivor, save 2D or report
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:106:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:171:51
+✖ existing scene ignores pending show after ownership loss before layout (7.676083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+          plays: 0,
+  +       shows: 2
+  -       shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:187:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:171:51
+✖ existing scene ignores pending play after ownership loss before layout (8.030708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+
+    {
+      diagnostics: 0,
+      mode: '3d',
+      notices: [],
+      saved: {
+  ...
+          destroyed: 0,
+  +       plays: 1,
+  -       plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:187:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    expected: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/pending-scan-ownership.test.mjs:171:51
+✖ existing scene ignores pending reject after ownership loss before layout (7.534167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    {
+  +   diagnostics: 1,
+  +   mode: '2d',
+  +   notices: [
+  +     'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.'
+  +   ],
+  -   diagnostics: 0,
+  -   mode: '3d',
+  -   notices: [],
+      saved: {
+  +     mode: '2d'
+  -     mode: '3d'
+      },
+  +   saves: [
+  +     {
+  +       mode: '2d'
+  +     }
+  +   ],
+  -   saves: [],
+      scenes: [
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 2
+        },
+        {
+  +       destroyed: 1,
+  -       destroyed: 0,
+          plays: 0,
+          shows: 1
+        }
+      ]
+    }
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/pending-scan-ownership.test.mjs:187:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { scenes: [ [Object], [Object] ], mode: '2d', saved: { mode: '2d' }, saves: [ [Object] ], notices: [ 'Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.' ], diagnostics: 1 },
+    expected: { scenes: [ [Object], [Object] ], mode: '3d', saved: { mode: '3d' }, saves: [], notices: [], diagnostics: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

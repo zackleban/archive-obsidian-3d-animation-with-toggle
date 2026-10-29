@@ -31187,14 +31187,15 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
     }
     return a2.scene;
   }
-  // A late folder scan must not resurrect a closed view or replace a newer animation.
+  // Validate ownership at completion: attach() starts scans before map insertion,
+  // and pane/control ownership can change before layout reconciliation arrives.
   async render(view, a2, animate = false, onlyChanged = false) {
     if (onlyChanged && a2.loadingAnimation) return;
     const request = ++a2.request;
     a2.loadingAnimation = animate;
     try {
       const roots = await findSubvaults(this.app);
-      if (this.unloaded || !a2.alive || this.prefs.mode !== "3d" || request !== a2.request) return;
+      if (this.unloaded || !a2.alive || this.prefs.mode !== "3d" || request !== a2.request || !this.isCurrent(view, a2)) return;
       const graph = buildGraph(this.app, roots);
       const shape = shapeOf(graph);
       if (onlyChanged && shape === a2.shape) return;
@@ -31204,7 +31205,7 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
       if (animate) scene.play(graph);
       else scene.show(graph);
     } catch (error2) {
-      if (!this.unloaded && a2.alive && request === a2.request) {
+      if (!this.unloaded && a2.alive && request === a2.request && this.isCurrent(view, a2)) {
         this.setMode("2d");
         this.report(error2);
       }

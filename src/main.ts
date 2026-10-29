@@ -156,14 +156,15 @@ export default class ThreeDAnimationPlugin extends Plugin {
 		return a.scene;
 	}
 
-	// A late folder scan must not resurrect a closed view or replace a newer animation.
+	// Validate ownership at completion: attach() starts scans before map insertion,
+	// and pane/control ownership can change before layout reconciliation arrives.
 	private async render(view: View, a: Attached, animate = false, onlyChanged = false) {
 		if (onlyChanged && a.loadingAnimation) return;
 		const request = ++a.request;
 		a.loadingAnimation = animate;
 		try {
 			const roots = await findSubvaults(this.app);
-			if (this.unloaded || !a.alive || this.prefs.mode !== "3d" || request !== a.request) return;
+			if (this.unloaded || !a.alive || this.prefs.mode !== "3d" || request !== a.request || !this.isCurrent(view, a)) return;
 			const graph = buildGraph(this.app, roots);
 			const shape = shapeOf(graph);
 			if (onlyChanged && shape === a.shape) return;
@@ -173,7 +174,7 @@ export default class ThreeDAnimationPlugin extends Plugin {
 			if (animate) scene.play(graph);
 			else scene.show(graph);
 		} catch (error) {
-			if (!this.unloaded && a.alive && request === a.request) {
+			if (!this.unloaded && a.alive && request === a.request && this.isCurrent(view, a)) {
 				this.setMode("2d");
 				this.report(error);
 			}

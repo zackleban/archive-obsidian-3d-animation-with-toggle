@@ -1,6 +1,6 @@
 # Local review checklist
 
-Latest local checkpoint: [Four-fix quality REVIEW — 2026-10-29](#four-fix-quality-review--2026-10-29). Earlier entries below remain dated history.
+Latest local checkpoint: [Pending-scan ownership — 2026-10-29](#pending-scan-ownership--2026-10-29). Earlier entries below remain dated history.
 
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
@@ -123,3 +123,28 @@ GRAPH_MAIN_SOURCE="$graph_review_baseline/main.ts" node --test tests/control-own
 ```
 
 Expected baseline exit 1, 15 failures / 17 cases. Candidate: `node --test tests/control-ownership.test.mjs`, 17 pass. These commands do not run real Obsidian or WebGL. GraphScene, host inventory/events, icons/tooltips and vault scans are controlled doubles; scene-destroy counts establish dispatch, not native GPU release. Prior scene/dependency suites retain their separate evidence. Ownership is reconciled at delivered layout events and checked at clicks, not continuously; native event ordering, real DOM recreation/popouts and minimum-version behavior remain open in the existing real-app checklist. Include control replacement and unload/fresh-enable there when access permits.
+
+
+## Pending-scan ownership — 2026-10-29
+
+**agent decision 2026-10-28:** reuse the established current-owner predicate at scan success and failure consumption, because request/lifecycle checks alone permit stale work before layout reconciliation. Keep the guard after `await`: `attach()` starts saved-3D rendering before the attachment enters the map, and the asynchronous continuation observes the completed insertion. No initialization reordering, polling, graph-data, scene teardown, frame-failure or global-mode policy change is needed. Already issued filesystem reads are not cancelled.
+
+Actual `src/main.ts` and `src/vault-graph.ts` run with deferred adapter reads in [tests/pending-scan-ownership.test.mjs](../tests/pending-scan-ownership.test.mjs). The initial 42-case baseline at `070f22e` failed 30 cases before production edits; the final 48-case replay fails **33/48**, with fifteen preservation controls passing. [Persisted baseline output](../tests/evidence/pending-scan-ownership-baseline.txt) includes the original source head, command, exit 1 and assertions. Candidate focused tests pass **48/48**.
+
+The matrix changes workspace inventory, pane connectivity/deferred status, wand/toolbar identity, cube/toggle placement and individual option identity/placement while a scan is pending. It resolves or rejects before delivering layout-change. Stale success allocates/shows/plays nothing; stale rejection leaves global and persisted mode, independent healthy scenes and notices unchanged. Existing scenes cannot consume obsolete refresh/play results; layout reconciliation still retires them. Fresh ownership shows and plays normally. Controls cover immediate/delayed saved-3D startup and new panes, startup/current-owner failure and deliberate retry, 2D/unload/reconciliation, and superseded requests completing both before and after newer playback. Assertions measure actual scene dispatch counts, shape retention, saves, pressed states and original-error diagnostics.
+
+Replay without mutating the checkout:
+
+```sh
+graph_scan_baseline=$(mktemp -d)
+trap 'rm -rf "$graph_scan_baseline"' EXIT
+git show 070f22e:src/main.ts > "$graph_scan_baseline/main.ts"
+git show 070f22e:src/vault-graph.ts > "$graph_scan_baseline/vault-graph.ts"
+GRAPH_MAIN_SOURCE="$graph_scan_baseline/main.ts" node --test tests/pending-scan-ownership.test.mjs
+```
+
+Expected baseline exit 1, 33 failures / 48 cases. Candidate: `node --test tests/pending-scan-ownership.test.mjs`.
+
+The host double deliberately separates inventory/DOM changes from event delivery; the same-view deferred flag is a conservative synthetic scenario, not a claim about native DeferredView replacement. Installed Obsidian declarations describe immediate-or-queued layout readiness and deferred leaves (since 1.7.2); neither declarations nor these tests establish real event ordering. Native JSDOM events/DOM, actual graph building and promise continuations are exercised; GraphScene, persistence, debounce timing, host inventory and lifecycle events are doubles. Scene counts establish dispatch, not WebGL allocation/release. Earlier actual-scene/installed-controls suites retain separate evidence. Live WebGL, popout, physical-input and minimum-version gates above remain open, including saved-3D startup and ownership changes during reads. No blocked app launch was retried.
+
+Final `npm run qa` ran once and passed **113/113 tests** (48 new plus 65 retained), zero-warning lint, TypeScript, production build and package checks. An independent read-only reviewer found no blocker and separately ran all 48 focused cases successfully. The rebuilt `main.js` exactly matches an in-memory build using the production configuration; its diff contains only the matching comment and two guards. `git diff --check` passes. Dependencies, metadata, styles and scene/graph implementations are unchanged. Nothing was installed, pushed, tagged, released or submitted.
