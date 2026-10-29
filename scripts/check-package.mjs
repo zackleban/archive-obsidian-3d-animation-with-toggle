@@ -1,0 +1,16 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+const json = (name) => JSON.parse(readFileSync(name, "utf8"));
+const manifest = json("manifest.json");
+for (const key of ["id", "name", "version", "minAppVersion", "description", "author"]) assert.equal(typeof manifest[key], "string", key);
+assert.equal(typeof manifest.isDesktopOnly, "boolean");
+assert.match(manifest.id, /^[a-z]+(?:-[a-z]+)*$/);
+assert.ok(!manifest.id.includes("obsidian") && !manifest.id.endsWith("plugin"));
+assert.ok(!/obsidian|plugin/i.test(manifest.name));
+assert.equal(manifest.version, json("package.json").version);
+assert.equal(manifest.version, json("package-lock.json").version);
+assert.equal(json("versions.json")[manifest.version], manifest.minAppVersion);
+assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
+assert.ok(manifest.description.length <= 250 && manifest.description.endsWith("."));
+for (const file of ["main.js", "styles.css", "LICENSE", "README.md", "THIRD_PARTY_NOTICES.md"]) assert.ok(readFileSync(file).length > 0, file);
+console.log("Package metadata and local release files are consistent.");

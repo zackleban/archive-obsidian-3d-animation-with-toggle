@@ -130,3 +130,21 @@ body {
 .three-d-tip.is-shown {
 	display: block;
 }
+
+/* Native buttons keep keyboard focus and pressed state without the default button chrome. */
+button.three-d-toggle-option {
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	height: auto;
+	min-height: 24px;
+	background: transparent;
+}
+button.three-d-toggle-option.is-active {
+	background: var(--three-d-accent);
+}
+.three-d-toggle-option:focus-visible,
+.mod-animate-3d:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: -2px;
+}

@@ -88,8 +88,13 @@ export class GraphScene {
 		this.legendEl = this.el.createDiv("three-d-legend");
 		this.tipEl = this.el.createDiv("three-d-tip");
 
-		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-		this.renderer.setPixelRatio(this.el.win.devicePixelRatio);
+		try {
+			this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+		} catch (error) {
+			this.el.remove();
+			throw error;
+		}
+		this.renderer.setPixelRatio(Math.min(2, this.el.win.devicePixelRatio));
 		this.renderer.setClearColor(0x000000, 0);
 		this.canvasHost.appendChild(this.renderer.domElement);
 
@@ -110,7 +115,7 @@ export class GraphScene {
 		canvas.addEventListener("pointerleave", () => this.setHover(-1));
 		canvas.addEventListener("pointerdown", (e) => this.onDown(e));
 		canvas.addEventListener("pointerup", (e) => this.onUp(e));
-		canvas.addEventListener("pointercancel", () => this.release());
+		canvas.addEventListener("pointercancel", () => { this.downAt = null; this.release(); });
 		canvas.addEventListener("dblclick", (e) => this.onDoubleClick(e));
 
 		this.resize = new ResizeObserver(() => this.fit());
@@ -160,10 +165,15 @@ export class GraphScene {
 		this.controls.dispose();
 		this.clearMeshes();
 		this.renderer.dispose();
+		this.renderer.forceContextLoss();
 		this.el.remove();
 	}
 
 	private load(graph: VaultGraph) {
+		this.el.win.clearTimeout(this.openTimer);
+		this.release();
+		this.downAt = null;
+		this.zoom = null;
 		this.graph = graph;
 		this.sim?.stop();
 		this.clearMeshes();
@@ -300,14 +310,14 @@ export class GraphScene {
 			// Ease out with a small overshoot, so each note lands with a little bounce.
 			const ease = 1 + 2.7 * Math.pow(t - 1, 3) + 1.7 * Math.pow(t - 1, 2);
 			const r = (2 + Math.sqrt(graph.notes[i].degree) * 1.2) * Math.max(0.001, ease) * (i === this.hovered ? 1.5 : 1);
-			m.compose(p.set(n.x!, n.y!, n.z!), q, s.set(r, r, r));
+			m.compose(p.set(n.x!, n.y!, n.z), q, s.set(r, r, r));
 			this.dots.setMatrixAt(i, m);
 		}
 		this.dots.instanceMatrix.needsUpdate = true;
 		this.dots.computeBoundingSphere();
 
 		const pos = this.lines.geometry.getAttribute("position") as THREE.BufferAttribute;
-		const arr = pos.array as Float32Array;
+		const arr = pos.array;
 		for (let l = 0; l < this.aliveLinks; l++) {
 			const a = this.nodes[graph.links[l][0]];
 			const b = this.nodes[graph.links[l][1]];
@@ -363,9 +373,10 @@ export class GraphScene {
 	}
 
 	private onDown(e: PointerEvent) {
-		this.downAt = { x: e.clientX, y: e.clientY };
+		this.downAt = null;
 		this.el.win.clearTimeout(this.holdTimer);
 		if (e.button !== 0) return;
+		this.downAt = { x: e.clientX, y: e.clientY };
 		this.holdTimer = this.el.win.setTimeout(() => this.grab(e.clientX, e.clientY), HOLD_MS);
 	}
 
@@ -430,8 +441,9 @@ export class GraphScene {
 		const grabbed = this.grabbedAt !== null;
 		this.downAt = null;
 		this.release();
-		if (grabbed || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) return;
-		const note = this.hovered >= 0 ? this.graph?.notes[this.hovered] : undefined;
+		if (e.button !== 0 || grabbed || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) return;
+		const hit = this.dots ? this.rayAt(e).intersectObject(this.dots)[0] : undefined;
+		const note = hit?.instanceId !== undefined ? this.graph?.notes[hit.instanceId] : undefined;
 		if (!note) return;
 		this.el.win.clearTimeout(this.openTimer);
 		this.openTimer = this.el.win.setTimeout(() => this.hooks.open(note.path), CLICK_WAIT_MS);
@@ -489,7 +501,7 @@ export class GraphScene {
 	private cssColor(value: string) {
 		const probe = this.el.createDiv();
 		probe.style.color = value;
-		const color = getComputedStyle(probe).color;
+		const color = this.el.win.getComputedStyle(probe).color;
 		probe.remove();
 		return color || "#888888";
 	}

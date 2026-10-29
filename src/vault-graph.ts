@@ -30,10 +30,15 @@ export interface VaultGraph {
 export async function findSubvaults(app: App): Promise<string[]> {
 	const adapter = app.vault.adapter;
 	const folders = app.vault.getAllFolders(false);
-	const nested = await Promise.all(
-		folders.map(async (f) => ((await adapter.exists(`${f.path}/.obsidian`)) ? f.path : null)),
-	);
-	const found = nested.filter((p): p is string => p !== null);
+	const found: string[] = [];
+	// Bound disk work in large vaults instead of starting one request per folder at once.
+	for (let start = 0; start < folders.length; start += 16) {
+		const batch = await Promise.all(folders.slice(start, start + 16).map(async (folder) => {
+			// Nested vaults may use a different config directory from the parent.
+			return await adapter.exists(`${folder.path}/${app.vault.configDir}`) ? folder.path : null;
+		}));
+		found.push(...batch.filter((path): path is string => path !== null));
+	}
 	if (found.length > 0) return found;
 	return app.vault.getRoot().children.filter((c) => !(c instanceof TFile)).map((c) => c.path);
 }
@@ -51,7 +56,7 @@ export function buildGraph(app: App, subvaults: string[]): VaultGraph {
 	// Subvaults in name order, then the notes outside them.
 	const keys = files.map((f) => groupOf(f.path) ?? "");
 	const order = [...new Set(keys)].sort((a, b) => (a === "") !== (b === "") ? (a === "" ? 1 : -1) : a.localeCompare(b));
-	const groups = order.map((k) => (k === "" ? rootName : k.split("/").pop() ?? k));
+	const groups = order.map((k) => (k === "" ? rootName : k));
 	const groupIndex = new Map(order.map((k, i) => [k, i]));
 	const raw = files.map((f, i) => ({
 		path: f.path,

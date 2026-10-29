@@ -1,3 +1,160 @@
+/*!
+# Third-party notices
+
+The following libraries are bundled in main.js. Obsidian itself is supplied by the host app.
+
+## three 0.186.1 (MIT)
+
+The MIT License
+
+Copyright © 2010-2026 three.js authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+## d3-force-3d 3.0.6 (MIT)
+
+MIT License
+
+Copyright (c) 2017 Vasco Asturiano
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+## d3-binarytree 1.0.2 (MIT)
+
+MIT License
+
+Copyright (c) 2017 Vasco Asturiano
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+## d3-dispatch 3.0.1 (ISC)
+
+Copyright 2010-2021 Mike Bostock
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+
+
+## d3-octree 1.1.0 (MIT)
+
+MIT License
+
+Copyright (c) 2017 Vasco Asturiano
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+## d3-quadtree 3.0.1 (ISC)
+
+Copyright 2010-2021 Mike Bostock
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+
+
+## d3-timer 3.0.1 (ISC)
+
+Copyright 2010-2021 Mike Bostock
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+
+
+*/
 "use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -30431,8 +30588,13 @@ var GraphScene = class {
     this.dayEl = this.el.createDiv("three-d-day");
     this.legendEl = this.el.createDiv("three-d-legend");
     this.tipEl = this.el.createDiv("three-d-tip");
-    this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setPixelRatio(this.el.win.devicePixelRatio);
+    try {
+      this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    } catch (error2) {
+      this.el.remove();
+      throw error2;
+    }
+    this.renderer.setPixelRatio(Math.min(2, this.el.win.devicePixelRatio));
     this.renderer.setClearColor(0, 0);
     this.canvasHost.appendChild(this.renderer.domElement);
     this.scene.add(new AmbientLight(16777215, 1.6));
@@ -30450,7 +30612,10 @@ var GraphScene = class {
     canvas.addEventListener("pointerleave", () => this.setHover(-1));
     canvas.addEventListener("pointerdown", (e) => this.onDown(e));
     canvas.addEventListener("pointerup", (e) => this.onUp(e));
-    canvas.addEventListener("pointercancel", () => this.release());
+    canvas.addEventListener("pointercancel", () => {
+      this.downAt = null;
+      this.release();
+    });
     canvas.addEventListener("dblclick", (e) => this.onDoubleClick(e));
     this.resize = new ResizeObserver(() => this.fit());
     this.resize.observe(this.el);
@@ -30494,9 +30659,14 @@ var GraphScene = class {
     this.controls.dispose();
     this.clearMeshes();
     this.renderer.dispose();
+    this.renderer.forceContextLoss();
     this.el.remove();
   }
   load(graph) {
+    this.el.win.clearTimeout(this.openTimer);
+    this.release();
+    this.downAt = null;
+    this.zoom = null;
     this.graph = graph;
     this.sim?.stop();
     this.clearMeshes();
@@ -30640,9 +30810,10 @@ var GraphScene = class {
     });
   }
   onDown(e) {
-    this.downAt = { x: e.clientX, y: e.clientY };
+    this.downAt = null;
     this.el.win.clearTimeout(this.holdTimer);
     if (e.button !== 0) return;
+    this.downAt = { x: e.clientX, y: e.clientY };
     this.holdTimer = this.el.win.setTimeout(() => this.grab(e.clientX, e.clientY), HOLD_MS);
   }
   // From here until the button comes up, the drag slides the picture and never turns it.
@@ -30701,8 +30872,9 @@ var GraphScene = class {
     const grabbed = this.grabbedAt !== null;
     this.downAt = null;
     this.release();
-    if (grabbed || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) return;
-    const note = this.hovered >= 0 ? this.graph?.notes[this.hovered] : void 0;
+    if (e.button !== 0 || grabbed || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > STILL_PX) return;
+    const hit = this.dots ? this.rayAt(e).intersectObject(this.dots)[0] : void 0;
+    const note = hit?.instanceId !== void 0 ? this.graph?.notes[hit.instanceId] : void 0;
     if (!note) return;
     this.el.win.clearTimeout(this.openTimer);
     this.openTimer = this.el.win.setTimeout(() => this.hooks.open(note.path), CLICK_WAIT_MS);
@@ -30753,7 +30925,7 @@ var GraphScene = class {
   cssColor(value) {
     const probe = this.el.createDiv();
     probe.style.color = value;
-    const color = getComputedStyle(probe).color;
+    const color = this.el.win.getComputedStyle(probe).color;
     probe.remove();
     return color || "#888888";
   }
@@ -30774,10 +30946,13 @@ var import_obsidian2 = require("obsidian");
 async function findSubvaults(app) {
   const adapter = app.vault.adapter;
   const folders = app.vault.getAllFolders(false);
-  const nested = await Promise.all(
-    folders.map(async (f) => await adapter.exists(`${f.path}/.obsidian`) ? f.path : null)
-  );
-  const found = nested.filter((p) => p !== null);
+  const found = [];
+  for (let start = 0; start < folders.length; start += 16) {
+    const batch = await Promise.all(folders.slice(start, start + 16).map(async (folder) => {
+      return await adapter.exists(`${folder.path}/${app.vault.configDir}`) ? folder.path : null;
+    }));
+    found.push(...batch.filter((path) => path !== null));
+  }
   if (found.length > 0) return found;
   return app.vault.getRoot().children.filter((c2) => !(c2 instanceof import_obsidian2.TFile)).map((c2) => c2.path);
 }
@@ -30790,7 +30965,7 @@ function buildGraph(app, subvaults) {
   const start = days.length > 0 ? days.reduce((a2, b) => Math.min(a2, b)) : (0, import_obsidian2.moment)().startOf("day").valueOf();
   const keys = files.map((f) => groupOf(f.path) ?? "");
   const order = [...new Set(keys)].sort((a2, b) => a2 === "" !== (b === "") ? a2 === "" ? 1 : -1 : a2.localeCompare(b));
-  const groups = order.map((k) => k === "" ? rootName : k.split("/").pop() ?? k);
+  const groups = order.map((k) => k === "" ? rootName : k);
   const groupIndex = new Map(order.map((k, i) => [k, i]));
   const raw = files.map((f, i) => ({
     path: f.path,
@@ -30828,41 +31003,47 @@ function buildGraph(app, subvaults) {
 }
 
 // src/main.ts
-var DEFAULTS = { mode: "2d" };
 var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
   constructor() {
     super(...arguments);
-    this.prefs = { ...DEFAULTS };
+    this.prefs = { mode: "2d" };
     this.attached = /* @__PURE__ */ new Map();
+    this.unloaded = false;
   }
   async onload() {
-    this.prefs = Object.assign({}, DEFAULTS, await this.loadData());
+    const saved = await this.loadData();
+    this.prefs.mode = saved?.mode === "3d" ? "3d" : "2d";
     const attach = () => this.attachAll();
     this.app.workspace.onLayoutReady(attach);
     this.registerEvent(this.app.workspace.on("layout-change", attach));
     this.registerEvent(this.app.workspace.on("active-leaf-change", attach));
     this.registerEvent(this.app.workspace.on("css-change", () => this.attached.forEach((a2) => a2.scene?.recolor())));
     const refresh = (0, import_obsidian3.debounce)(() => this.refreshAll(), 1e3, true);
+    this.register(() => refresh.cancel());
     this.registerEvent(this.app.metadataCache.on("resolved", refresh));
     this.registerEvent(this.app.vault.on("delete", refresh));
     this.registerEvent(this.app.vault.on("rename", refresh));
   }
   onunload() {
+    this.unloaded = true;
     this.attached.forEach((a2) => this.detach(a2));
     this.attached.clear();
   }
-  // Puts the button and the toggle under the timelapse wand of every global graph view.
   attachAll() {
+    if (this.unloaded) return;
     const live = /* @__PURE__ */ new Set();
     for (const leaf of this.app.workspace.getLeavesOfType("graph")) {
+      if (leaf.isDeferred) continue;
       const view = leaf.view;
       live.add(view);
       const wand = view.containerEl.querySelector(".graph-controls .graph-controls-button.mod-animate");
       const known = this.attached.get(view);
       if (known && known.button.isConnected) continue;
-      if (known) this.detach(known);
-      if (!wand) continue;
-      this.attached.set(view, this.attach(view, wand));
+      if (known) {
+        this.detach(known);
+        this.attached.delete(view);
+      }
+      if (wand) this.attached.set(view, this.attach(view, wand));
     }
     for (const [view, a2] of this.attached) {
       if (live.has(view)) continue;
@@ -30871,83 +31052,109 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
     }
   }
   attach(view, wand) {
-    const button = createDiv("clickable-icon graph-controls-button mod-animate-3d");
+    const button = view.containerEl.createEl("button", { cls: "clickable-icon graph-controls-button mod-animate-3d", attr: { type: "button", "aria-label": "Start 3D animation" } });
     (0, import_obsidian3.setIcon)(button, "box");
     (0, import_obsidian3.setTooltip)(button, "Start 3D animation");
     wand.insertAdjacentElement("afterend", button);
-    const toggle = createDiv("three-d-toggle");
-    toggle.setAttribute("aria-label", "2D or 3D");
+    const toggle = view.containerEl.createDiv({ cls: "three-d-toggle", attr: { role: "group", "aria-label": "Graph dimensions" } });
     button.insertAdjacentElement("afterend", toggle);
-    const a2 = { button, toggle, scene: null, shape: "" };
+    const a2 = { button, toggle, scene: null, shape: "", request: 0, alive: true, loadingAnimation: false };
     for (const mode of ["2d", "3d"]) {
-      const option = toggle.createDiv({ cls: "three-d-toggle-option", text: mode.toUpperCase() });
+      const option = toggle.createEl("button", { cls: "three-d-toggle-option", text: mode.toUpperCase(), attr: { type: "button", "aria-label": `Show ${mode.toUpperCase()} graph` } });
       option.dataset.mode = mode;
-      option.addEventListener("click", () => void this.setMode(mode));
+      option.addEventListener("click", () => this.setMode(mode));
     }
-    button.addEventListener("click", () => void this.play(view, a2));
+    button.addEventListener("click", () => {
+      this.setMode("3d");
+      void this.render(view, a2, true);
+    });
     this.paintToggle(a2);
-    if (this.prefs.mode === "3d") void this.show(view, a2);
+    if (this.prefs.mode === "3d") void this.render(view, a2);
     return a2;
   }
-  detach(a2) {
+  stop(a2) {
+    a2.request++;
+    a2.loadingAnimation = false;
     a2.scene?.destroy();
+    a2.scene = null;
+    a2.button.removeClass("is-running");
+  }
+  detach(a2) {
+    a2.alive = false;
+    this.stop(a2);
     a2.button.remove();
     a2.toggle.remove();
   }
-  async setMode(mode) {
+  setMode(mode) {
     if (this.prefs.mode === mode) return;
     this.prefs.mode = mode;
-    await this.saveData(this.prefs);
+    void this.saveData(this.prefs).catch((error2) => this.report(error2));
     for (const [view, a2] of this.attached) {
       this.paintToggle(a2);
-      if (mode === "3d") await this.show(view, a2);
-      else {
-        a2.scene?.destroy();
-        a2.scene = null;
-      }
+      if (mode === "2d") this.stop(a2);
+      else void this.render(view, a2);
     }
   }
   paintToggle(a2) {
     a2.toggle.querySelectorAll(".three-d-toggle-option").forEach((el) => {
-      el.toggleClass("is-active", el.dataset.mode === this.prefs.mode);
+      const selected = el.dataset.mode === this.prefs.mode;
+      el.toggleClass("is-active", selected);
+      el.setAttribute("aria-pressed", String(selected));
     });
   }
-  // The 3D picture lives over the graph's own canvas; the graph's controls stay on top of it.
   sceneFor(view, a2) {
     if (!a2.scene) {
       const content = view.containerEl.querySelector(".view-content") ?? view.containerEl;
       a2.scene = new GraphScene(content, {
-        open: (path) => void this.app.workspace.openLinkText(path, "", false),
-        ended: () => a2.button.removeClass("is-running")
+        open: (path) => {
+          void this.app.workspace.openLinkText(path, "", false).catch((error2) => this.report(error2));
+        },
+        ended: () => {
+          a2.button.removeClass("is-running");
+          this.refreshAll();
+        }
       });
     }
     return a2.scene;
   }
-  async show(view, a2) {
-    const graph = buildGraph(this.app, await findSubvaults(this.app));
-    a2.shape = shapeOf(graph);
-    this.sceneFor(view, a2).show(graph);
-  }
-  // Starts from day one; from 2D it flips the toggle to 3D first.
-  async play(view, a2) {
-    if (this.prefs.mode !== "3d") await this.setMode("3d");
-    const graph = buildGraph(this.app, await findSubvaults(this.app));
-    a2.button.addClass("is-running");
-    this.sceneFor(view, a2).play(graph);
-  }
-  async refreshAll() {
-    if (this.prefs.mode !== "3d") return;
-    for (const [view, a2] of this.attached) {
-      if (!a2.scene || a2.scene.isRunning) continue;
-      const graph = buildGraph(this.app, await findSubvaults(this.app));
-      if (shapeOf(graph) === a2.shape) continue;
-      a2.shape = shapeOf(graph);
-      a2.scene.show(graph);
+  // A late folder scan must not resurrect a closed view or replace a newer animation.
+  async render(view, a2, animate = false, onlyChanged = false) {
+    if (onlyChanged && a2.loadingAnimation) return;
+    const request = ++a2.request;
+    a2.loadingAnimation = animate;
+    try {
+      const roots = await findSubvaults(this.app);
+      if (this.unloaded || !a2.alive || this.prefs.mode !== "3d" || request !== a2.request) return;
+      const graph = buildGraph(this.app, roots);
+      const shape = shapeOf(graph);
+      if (onlyChanged && shape === a2.shape) return;
+      const scene = this.sceneFor(view, a2);
+      a2.shape = shape;
+      a2.button.toggleClass("is-running", animate);
+      if (animate) scene.play(graph);
+      else scene.show(graph);
+    } catch (error2) {
+      if (!this.unloaded && a2.alive && request === a2.request) {
+        this.setMode("2d");
+        this.report(error2);
+      }
+    } finally {
+      if (request === a2.request) a2.loadingAnimation = false;
     }
+  }
+  refreshAll() {
+    if (this.unloaded || this.prefs.mode !== "3d") return;
+    for (const [view, a2] of this.attached) {
+      if (a2.scene && !a2.scene.isRunning) void this.render(view, a2, false, true);
+    }
+  }
+  report(error2) {
+    console.error("3D Animation with Toggle:", error2);
+    new import_obsidian3.Notice("Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.");
   }
 };
 function shapeOf(graph) {
-  return JSON.stringify([graph.groups, graph.notes.map((n) => n.path), graph.links]);
+  return JSON.stringify([graph.groups, graph.notes, graph.links, graph.start, graph.days]);
 }
 /*! Bundled license information:
 

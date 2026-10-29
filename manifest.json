@@ -1,9 +1,9 @@
 {
-	"id": "3d-animation-with-toggle",
+	"id": "three-d-animation-with-toggle",
 	"name": "3D Animation with Toggle",
-	"version": "1.2.0",
-	"minAppVersion": "1.6.0",
-	"description": "Adds a Start 3D animation button and a 2D/3D toggle under the graph view's timelapse button. In 3D each subvault is its own coloured cluster, and the animation grows the vault from day one. Drag to turn in any direction; double-click to zoom in around that spot (Alt to zoom out); press and hold for a quarter second to grab the picture with the hand and slide it without turning it.",
+	"version": "1.2.1",
+	"minAppVersion": "1.7.2",
+	"description": "Explore your notes as a 3D graph, switch between 2D and 3D, and animate vault growth by creation date with colored folder clusters.",
 	"author": "Zack",
 	"isDesktopOnly": true
 }
