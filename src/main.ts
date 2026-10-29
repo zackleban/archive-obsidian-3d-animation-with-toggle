@@ -148,6 +148,12 @@ export default class ThreeDAnimationPlugin extends Plugin {
 				ended: () => { a.button.removeClass("is-running"); this.refreshAll(); },
 				failed: (scene, error) => {
 					if (this.unloaded || !a.alive || a.scene !== scene) return;
+					if (!this.isCurrent(view, a)) {
+						// The scene has already cleaned itself up. Retire its handle and
+						// pending work without disrupting an independent current pane.
+						this.stop(a);
+						return;
+					}
 					this.setMode("2d");
 					this.report(error);
 				},

@@ -31180,6 +31180,10 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
         },
         failed: (scene, error2) => {
           if (this.unloaded || !a2.alive || a2.scene !== scene) return;
+          if (!this.isCurrent(view, a2)) {
+            this.stop(a2);
+            return;
+          }
           this.setMode("2d");
           this.report(error2);
         }

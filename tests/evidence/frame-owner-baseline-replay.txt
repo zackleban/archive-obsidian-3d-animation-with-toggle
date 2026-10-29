@@ -1,0 +1,87 @@
+Final replay baseline: d29bd8a970ff4702a5668ed836ca1141f51b7f92 src/main.ts, scene.ts, vault-graph.ts
+Command: GRAPH_MAIN_SOURCE=<exported baseline>/main.ts node --test --test-name-pattern=scheduled failure respects tests/scene-lifecycle.test.mjs
+Exit: 1
+
+✖ scheduled failure respects inventory before layout delivery (77.925042ms)
+✖ scheduled failure respects detached pane before layout delivery (21.644333ms)
+✖ scheduled failure respects replaced option before layout delivery (20.138792ms)
+✖ scheduled failure respects restored controls before layout delivery (17.328125ms)
+✔ scheduled failure respects current owner before layout delivery (21.33575ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 391.955958
+
+✖ failing tests:
+
+test at tests/scene-lifecycle.test.mjs:459:3
+✖ scheduled failure respects inventory before layout delivery (77.925042ms)
+  AssertionError [ERR_ASSERTION]: obsolete failure cannot force global 2D
+
+  '2d' !== '3d'
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/scene-lifecycle.test.mjs:497:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2d',
+    expected: '3d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/scene-lifecycle.test.mjs:459:3
+✖ scheduled failure respects detached pane before layout delivery (21.644333ms)
+  AssertionError [ERR_ASSERTION]: obsolete failure cannot force global 2D
+
+  '2d' !== '3d'
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/scene-lifecycle.test.mjs:497:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2d',
+    expected: '3d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/scene-lifecycle.test.mjs:459:3
+✖ scheduled failure respects replaced option before layout delivery (20.138792ms)
+  AssertionError [ERR_ASSERTION]: obsolete failure cannot force global 2D
+
+  '2d' !== '3d'
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/scene-lifecycle.test.mjs:497:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2d',
+    expected: '3d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/scene-lifecycle.test.mjs:459:3
+✖ scheduled failure respects restored controls before layout delivery (17.328125ms)
+  AssertionError [ERR_ASSERTION]: obsolete failure cannot force global 2D
+
+  '2d' !== '3d'
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/scene-lifecycle.test.mjs:497:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '2d',
+    expected: '3d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

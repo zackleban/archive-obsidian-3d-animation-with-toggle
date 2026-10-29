@@ -26,7 +26,7 @@ Open the **global graph**, then close its graph-settings panel. Below the timela
 - Hold the left button still for a quarter-second, then drag to slide the picture without rotating it.
 - Hover a dot for its note and cluster names. Click a dot to open its note.
 
-The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin invalidates pending scan results and disposes its scene; filesystem reads already issued may still finish. If scene initialization or a later animation frame fails, the plugin releases resources already acquired and restores 2D in all global graph panes. It reports the failure once through the console and a notice when those channels are available. It does not automatically retry; select 3D or the cube to deliberately try again with a fresh scene.
+The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin invalidates pending scan results and disposes its scene; filesystem reads already issued may still finish. If scene initialization or a later animation frame fails for a current pane/control owner, the plugin releases resources already acquired and restores 2D in all global graph panes. A scheduled failure from an obsolete pane/control owner releases that scene and retires its pending work without stopping independent healthy panes. A current-owner failure is reported once through the console and a notice when those channels are available. It does not automatically retry; select 3D or the cube to deliberately try again with a fresh scene.
 
 ## Clusters and dates
 

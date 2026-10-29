@@ -1,6 +1,6 @@
 # Local review checklist
 
-Latest local checkpoint: [Pending-scan ownership — 2026-10-29](#pending-scan-ownership--2026-10-29). Earlier entries below remain dated history.
+Latest local checkpoint: [Confirmation and ownership REVIEW — 2026-10-29](#confirmation-and-ownership-review--2026-10-29). Earlier entries below remain dated history.
 
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
@@ -148,3 +148,39 @@ Expected baseline exit 1, 33 failures / 48 cases. Candidate: `node --test tests/
 The host double deliberately separates inventory/DOM changes from event delivery; the same-view deferred flag is a conservative synthetic scenario, not a claim about native DeferredView replacement. Installed Obsidian declarations describe immediate-or-queued layout readiness and deferred leaves (since 1.7.2); neither declarations nor these tests establish real event ordering. Native JSDOM events/DOM, actual graph building and promise continuations are exercised; GraphScene, persistence, debounce timing, host inventory and lifecycle events are doubles. Scene counts establish dispatch, not WebGL allocation/release. Earlier actual-scene/installed-controls suites retain separate evidence. Live WebGL, popout, physical-input and minimum-version gates above remain open, including saved-3D startup and ownership changes during reads. No blocked app launch was retried.
 
 Final `npm run qa` ran once and passed **113/113 tests** (48 new plus 65 retained), zero-warning lint, TypeScript, production build and package checks. An independent read-only reviewer found no blocker and separately ran all 48 focused cases successfully. The rebuilt `main.js` exactly matches an in-memory build using the production configuration; its diff contains only the matching comment and two guards. `git diff --check` passes. Dependencies, metadata, styles and scene/graph implementations are unchanged. Nothing was installed, pushed, tagged, released or submitted.
+
+## Confirmation and ownership REVIEW — 2026-10-29
+
+agent decision 2026-10-28: accept only the bounded local REVIEW after independent source/contract review, fresh checks and local commits; keep existing live/community gates open because local evidence cannot establish them.
+
+Reviewed `070f22e` → `d29bd8a` against main/scene/graph code and installed contracts. Pending success/error consumption checks current ownership after request/lifecycle guards; older requests cannot replace newer playback. Saved-3D startup retains attachment-before-map-insertion ordering; no entry-time guard was introduced. Existing-scene refresh/play and genuine current-owner global fallback remain intact. A separate scheduled-frame ownership defect was reproduced and corrected below, with independent read-only review.
+
+Fresh `npm run qa` passed **118/118 tests**, TypeScript, production build and package checks. Configured lint passed with zero warnings. Each of the seven QA commands ran once for this REVIEW; the fresh aggregate is **543 standalone tests plus 12 shared cases**. Five new graph cases account for the increase from the historical 538-plus-12 intake arithmetic. No final QA failed.
+
+README installation/development instructions, manifest/package/lock/root-lock/version agreement, desktop flags, dependency classification, licenses/notices and assets were checked against source/build configuration. Current official [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin%20guidelines), [developer policies](https://docs.obsidian.md/community-directory/developer-policies), [submission requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins), [manifest](https://docs.obsidian.md/Reference/Manifest) and [submission instructions](https://docs.obsidian.md/Plugins/Releasing/Submit%20your%20plugin) were rechecked. Local consistency does not establish minimum-version compatibility, directory availability, hosted-review success or community approval.
+
+Graph JS was rebuilt for the correction; CSS, metadata and dependencies are unchanged. Diff checks pass. Existing readiness/live protocols remain their sole homes, including explorer/modal/WebGL/xterm, popout, mobile where advertised, Linux and minimum versions as applicable. The three older live sorting/recovery deliverables remain blocked. No app-access retry, personal-vault installation, push, tag, release or submission occurred.
+
+### Scheduled-frame current ownership
+
+At `d29bd8a`, the scheduled-frame failure hook checked scene identity/liveness but not current pane/control ownership. Between ownership loss and layout reconciliation, an actual scene's renderer failure could destroy an independent healthy scene, save global 2D and report a current failure. The initial persisted focused baseline failed **3/4** cases with a current-owner control passing; the final five-case exported-original-source replay fails **4/5**, with that positive control passing. Evidence: [initial baseline](../tests/evidence/frame-owner-baseline.txt), [final replay](../tests/evidence/frame-owner-baseline-replay.txt).
+
+`src/main.ts` now checks `isCurrent(view, a)` in the scheduled failure hook. An obsolete scene has already destroyed its resources; `stop(a)` clears its handle, invalidates pending requests and removes running state without changing global mode, reporting a current failure or stopping independent scenes. Scene-identity/liveness checks remain first. Current-owner failures retain global 2D fallback and deliberate retry. Constructor and pending-scan paths are unchanged, including saved-3D attachment ordering. No automatic retry or cancellation of issued reads is added.
+
+The five additions to `tests/scene-lifecycle.test.mjs` compose actual main, scene and graph code with native JSDOM and controlled renderer/controls/observer/scheduler/host boundaries. They inject a scheduled render failure after successful initialization and a successful scheduled frame, before delivering layout. Inventory removal, pane detachment and option replacement retain a healthy sibling and exact mode/notice/resource assertions; later reconciliation permits a fresh scene and playback. A removed option restored before any layout also verifies that a pre-failure pending scan cannot revive the destroyed handle, while a deliberate cube click works. The current-owner control still destroys both scenes and reports once, then allows deliberate retry. Retained callbacks and unload remain safe. Candidate **5/5** pass, with all 113 prior tests passing in final QA.
+
+The first draft invoked a scheduler callback without removing its delivered handle from the fixture queue; its positive control caught the harness error. Corrected scheduler bookkeeping before persisting baseline evidence; no production change addressed that fixture issue. Independent read-only review passed the five cases and suggested the pending-scan/restored-control assertion, which was added and verified before final QA.
+
+Replay without changing the checkout:
+
+```sh
+graph_frame_baseline=$(mktemp -d)
+trap 'rm -rf "$graph_frame_baseline"' EXIT
+for file in main.ts scene.ts vault-graph.ts; do
+  git show "d29bd8a:src/$file" > "$graph_frame_baseline/$file"
+done
+ln -s "$PWD/node_modules" "$graph_frame_baseline/node_modules"
+GRAPH_MAIN_SOURCE="$graph_frame_baseline/main.ts" node --test --test-name-pattern='scheduled failure respects' tests/scene-lifecycle.test.mjs
+```
+
+Expected original result: exit 1, four failures and one passing control. Normal candidate invocation omits `GRAPH_MAIN_SOURCE`. These observations establish control/state ownership and instrumented cleanup, not native WebGL allocation/release, actual host event ordering, popout rendering or context-loss recovery. Existing live checks and dependency-cleanup limits remain open.

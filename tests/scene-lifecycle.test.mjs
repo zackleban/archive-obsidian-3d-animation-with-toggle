@@ -105,7 +105,7 @@ async function fixture(failure = null, cleanupFailure = null) {
   return {
     state, injected, cleanupError, parent, window,
     create: (hooks = {}) => new GraphScene(parent, { open(path) { state.opened.push(path); }, ended() { state.ended++; }, failed(scene, error) { state.failures.push({ scene, error }); }, ...hooks }),
-    loadPlugin: (extra = {}) => load("src/main.ts", { moment, ...extra }, undefined, dependencies),
+    loadPlugin: (extra = {}) => load(process.env.GRAPH_MAIN_SOURCE ?? "src/main.ts", { moment, ...extra }, undefined, dependencies),
     frame() { const [id, callback] = state.frames.entries().next().value; state.frames.delete(id); callback(); return callback; },
     restore() { if (previousObserver) Object.defineProperty(globalThis, "ResizeObserver", previousObserver); else delete globalThis.ResizeObserver; window.close(); },
   };
@@ -449,6 +449,99 @@ for (const failingChannel of ["console", "notice", "both"]) {
       retained.forEach(callback => callback()); f.events.get("resolved")(); await flush();
       assertReleased(f);
       assert.equal(noticeAttempts, 1);
+    } finally { f.plugin.onunload(); console.error = log; f.restore(); }
+  });
+}
+
+// Actual main + actual scene: ownership can drift before layout reconciliation,
+// independently of a scheduled renderer failure and its resource cleanup.
+for (const boundary of ["inventory", "detached pane", "replaced option", "restored controls", "current owner"]) {
+  test(`scheduled failure respects ${boundary} before layout delivery`, async () => {
+    const f = await pluginFixture();
+    const log = console.error, logs = []; console.error = (...args) => logs.push(args);
+    const noticeStart = notices.length;
+    try {
+      f.plugin.setMode("3d"); await flush();
+      const [owner, survivor] = [...f.plugin.attached.values()];
+      const failedScene = owner.scene, healthyScene = survivor.scene;
+      assert.ok(failedScene.dots && healthyScene.dots);
+      f.frame(); // Both scenes have initialized; one successful scheduled frame.
+      const [oldFrameId, oldFrame] = [...f.state.frames.entries()].at(-1);
+      let pending, release;
+      if (boundary === "restored controls") {
+        f.app.vault.getAllFolders = () => [new TFolder("Slow")];
+        f.app.vault.adapter.exists = () => new Promise(resolve => { release = resolve; });
+        pending = f.plugin.render(f.views[0], owner, true);
+        assert.equal(owner.loadingAnimation, true);
+      }
+      if (boundary === "inventory") f.app.workspace.getLeavesOfType = () => [{ view: f.views[1] }];
+      if (boundary === "detached pane") f.views[0].containerEl.remove();
+      if (boundary === "replaced option") owner.options[0].replaceWith(owner.options[0].cloneNode(true));
+      if (boundary === "restored controls") owner.options[0].remove();
+      // Select the first scene's retained frame, without delivering layout.
+      f.state.failure = "renderer.render";
+      f.state.frames.delete(oldFrameId); // Native schedulers remove a delivered callback.
+      oldFrame();
+      assert.equal(f.state.renderers[0].disposed, 1, "failed scene releases its own renderer");
+      assert.equal(f.state.renderers[0].contextLost, 1);
+      assert.equal(f.state.controls[0].disposed, 1);
+      assert.equal(f.state.observers[0].active, false);
+      assert.equal(failedScene.el.isConnected, false);
+      if (boundary === "current owner") {
+        assert.equal(f.plugin.prefs.mode, "2d");
+        assert.equal(survivor.scene, null);
+        assert.equal(f.state.renderers[1].disposed, 1);
+        assert.equal(notices.length - noticeStart, 1);
+        assert.equal(logs.filter(args => args.includes(f.injected)).length, 1);
+      } else {
+        assert.equal(f.plugin.prefs.mode, "3d", "obsolete failure cannot force global 2D");
+        assert.equal(f.plugin.saved.mode, "3d");
+        assert.equal(survivor.scene, healthyScene);
+        assert.equal(f.state.renderers[1].disposed, 0, "independent scene survives");
+        assert.equal(survivor.options[1].getAttribute("aria-pressed"), "true");
+        assert.equal(notices.length, noticeStart);
+        assert.equal(logs.length, 0);
+        assert.equal(owner.scene, null, "retire the already-destroyed scene handle");
+        assert.equal(owner.loadingAnimation, false);
+      }
+      f.state.failure = null;
+      oldFrame(); failedScene.hooks.failed(failedScene, Error("retained obsolete hook"));
+      if (boundary !== "current owner") {
+        assert.equal(f.plugin.prefs.mode, "3d");
+        if (boundary === "restored controls") {
+          owner.toggle.prepend(owner.options[0]);
+          release(false); await pending;
+          assert.equal(owner.scene, null, "restored controls cannot admit the pre-failure scan");
+          assert.equal(f.state.renderers.length, 2);
+          f.app.vault.getAllFolders = () => [];
+        }
+        else f.events.get("layout-change")();
+        if (boundary === "inventory") f.app.workspace.getLeavesOfType = () => f.views.map(view => ({ view }));
+        if (boundary === "detached pane") f.parent.append(f.views[0].containerEl);
+        if (boundary !== "restored controls") f.events.get("layout-change")();
+        await flush();
+        const fresh = f.plugin.attached.get(f.views[0]);
+        if (boundary === "restored controls") {
+          assert.equal(fresh, owner);
+          assert.equal(fresh.scene, null);
+        } else {
+          assert.notEqual(fresh, owner);
+          assert.ok(fresh.scene && fresh.scene !== failedScene);
+        }
+        fresh.button.click(); await flush();
+        assert.notEqual(fresh.scene, failedScene);
+        assert.equal(fresh.scene.isRunning, true);
+        assert.equal(survivor.scene, healthyScene);
+        assert.equal(f.state.renderers[1].disposed, 0);
+        assert.equal(notices.length, noticeStart);
+      } else {
+        owner.button.click(); await flush();
+        assert.equal(f.plugin.prefs.mode, "3d");
+        assert.ok(owner.scene && owner.scene !== failedScene);
+        assert.equal(owner.scene.isRunning, true);
+        assert.equal(notices.length - noticeStart, 1);
+      }
+      f.plugin.onunload(); assertReleased(f);
     } finally { f.plugin.onunload(); console.error = log; f.restore(); }
   });
 }
