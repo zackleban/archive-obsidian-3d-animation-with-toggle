@@ -5,8 +5,11 @@ import { buildGraph, findSubvaults, VaultGraph } from "./vault-graph";
 type Mode = "2d" | "3d";
 interface Settings { mode: Mode; }
 interface Attached {
+	wand: HTMLElement;
 	button: HTMLElement;
 	toggle: HTMLElement;
+	options: HTMLElement[];
+	cleanups: (() => void)[];
 	scene: GraphScene | null;
 	shape: string;
 	request: number;
@@ -44,12 +47,12 @@ export default class ThreeDAnimationPlugin extends Plugin {
 		if (this.unloaded) return;
 		const live = new Set<View>();
 		for (const leaf of this.app.workspace.getLeavesOfType("graph")) {
-			if (leaf.isDeferred) continue;
+			if (leaf.isDeferred || !leaf.view.containerEl.isConnected) continue;
 			const view = leaf.view;
 			live.add(view);
 			const wand = view.containerEl.querySelector<HTMLElement>(".graph-controls .graph-controls-button.mod-animate");
 			const known = this.attached.get(view);
-			if (known && known.button.isConnected) continue;
+			if (known && this.ownsControls(view, known, wand)) continue;
 			if (known) { this.detach(known); this.attached.delete(view); }
 			if (wand) this.attached.set(view, this.attach(view, wand));
 		}
@@ -67,19 +70,37 @@ export default class ThreeDAnimationPlugin extends Plugin {
 		wand.insertAdjacentElement("afterend", button);
 		const toggle = view.containerEl.createDiv({ cls: "three-d-toggle", attr: { role: "group", "aria-label": "Graph dimensions" } });
 		button.insertAdjacentElement("afterend", toggle);
-		const a: Attached = { button, toggle, scene: null, shape: "", request: 0, alive: true, loadingAnimation: false };
+		const a: Attached = { wand, button, toggle, options: [], cleanups: [], scene: null, shape: "", request: 0, alive: true, loadingAnimation: false };
+		const onClick = (el: HTMLElement, action: () => void) => {
+			const handler = () => { if (this.isCurrent(view, a)) action(); };
+			el.addEventListener("click", handler);
+			a.cleanups.push(() => el.removeEventListener("click", handler));
+		};
 		for (const mode of ["2d", "3d"] as Mode[]) {
 			const option = toggle.createEl("button", { cls: "three-d-toggle-option", text: mode.toUpperCase(), attr: { type: "button", "aria-label": `Show ${mode.toUpperCase()} graph` } });
 			option.dataset.mode = mode;
-			option.addEventListener("click", () => this.setMode(mode));
+			a.options.push(option);
+			onClick(option, () => this.setMode(mode));
 		}
-		button.addEventListener("click", () => {
+		onClick(button, () => {
 			this.setMode("3d");
 			void this.render(view, a, true);
 		});
 		this.paintToggle(a);
 		if (this.prefs.mode === "3d") void this.render(view, a);
 		return a;
+	}
+
+	private ownsControls(view: View, a: Attached, wand: HTMLElement | null) {
+		return a.alive && view.containerEl.isConnected && wand === a.wand && !!wand?.isConnected
+			&& a.button.parentElement === wand.parentElement && a.toggle.parentElement === wand.parentElement
+			&& a.options.length === 2 && a.options.every((option) => option.parentElement === a.toggle);
+	}
+
+	private isCurrent(view: View, a: Attached) {
+		return !this.unloaded && this.attached.get(view) === a
+			&& this.app.workspace.getLeavesOfType("graph").some((leaf) => leaf.view === view && !leaf.isDeferred)
+			&& this.ownsControls(view, a, view.containerEl.querySelector<HTMLElement>(".graph-controls .graph-controls-button.mod-animate"));
 	}
 
 	private stop(a: Attached) {
@@ -93,8 +114,10 @@ export default class ThreeDAnimationPlugin extends Plugin {
 
 	private detach(a: Attached) {
 		a.alive = false;
+		for (const cleanup of a.cleanups.splice(0)) cleanup();
 		this.stop(a);
 		a.button.remove();
+		for (const option of a.options) option.remove();
 		a.toggle.remove();
 	}
 

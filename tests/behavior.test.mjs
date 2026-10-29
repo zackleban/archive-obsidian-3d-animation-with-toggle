@@ -31,7 +31,7 @@ test("without nested vaults, graph falls back to top-level folders",async()=>{
   const app=appFor();app.vault.getRoot=()=>({children:[new TFolder("A"),new TFile("root.md")]});
   assert.deepEqual(await findSubvaults(app),["A"]);
 });
-const dom=new JSDOM('<div id="view"><div class="view-content"><div class="graph-controls"><div class="mod-animate"></div></div></div></div>');
+const dom=new JSDOM('<div id="view"><div class="view-content"><div class="graph-controls"><div class="graph-controls-button mod-animate"></div></div></div></div>');
 const {document,HTMLElement}=dom.window;
 HTMLElement.prototype.createEl=function(tag,options={}) {const el=document.createElement(tag);if(typeof options==="string")el.className=options;else{el.className=options.cls??"";el.textContent=options.text??"";for(const[k,v]of Object.entries(options.attr??{}))el.setAttribute(k,v);}this.append(el);return el;};
 HTMLElement.prototype.createDiv=function(options){return this.createEl("div",options);};
@@ -48,6 +48,7 @@ class GraphScene {
 const {default:Plugin}=await load("src/main.ts",{moment},{GraphScene});
 function fixture(){
   const app=appFor();const view={containerEl:document.querySelector("#view")};
+  app.workspace.getLeavesOfType=()=>[{view}];
   const plugin=new Plugin(app);return {app,view,plugin};
 }
 const flush=()=>new Promise(resolve=>setImmediate(resolve));

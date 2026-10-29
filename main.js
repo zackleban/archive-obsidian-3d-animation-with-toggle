@@ -31081,12 +31081,12 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
     if (this.unloaded) return;
     const live = /* @__PURE__ */ new Set();
     for (const leaf of this.app.workspace.getLeavesOfType("graph")) {
-      if (leaf.isDeferred) continue;
+      if (leaf.isDeferred || !leaf.view.containerEl.isConnected) continue;
       const view = leaf.view;
       live.add(view);
       const wand = view.containerEl.querySelector(".graph-controls .graph-controls-button.mod-animate");
       const known = this.attached.get(view);
-      if (known && known.button.isConnected) continue;
+      if (known && this.ownsControls(view, known, wand)) continue;
       if (known) {
         this.detach(known);
         this.attached.delete(view);
@@ -31106,19 +31106,33 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
     wand.insertAdjacentElement("afterend", button);
     const toggle = view.containerEl.createDiv({ cls: "three-d-toggle", attr: { role: "group", "aria-label": "Graph dimensions" } });
     button.insertAdjacentElement("afterend", toggle);
-    const a2 = { button, toggle, scene: null, shape: "", request: 0, alive: true, loadingAnimation: false };
+    const a2 = { wand, button, toggle, options: [], cleanups: [], scene: null, shape: "", request: 0, alive: true, loadingAnimation: false };
+    const onClick = (el, action) => {
+      const handler = () => {
+        if (this.isCurrent(view, a2)) action();
+      };
+      el.addEventListener("click", handler);
+      a2.cleanups.push(() => el.removeEventListener("click", handler));
+    };
     for (const mode of ["2d", "3d"]) {
       const option = toggle.createEl("button", { cls: "three-d-toggle-option", text: mode.toUpperCase(), attr: { type: "button", "aria-label": `Show ${mode.toUpperCase()} graph` } });
       option.dataset.mode = mode;
-      option.addEventListener("click", () => this.setMode(mode));
+      a2.options.push(option);
+      onClick(option, () => this.setMode(mode));
     }
-    button.addEventListener("click", () => {
+    onClick(button, () => {
       this.setMode("3d");
       void this.render(view, a2, true);
     });
     this.paintToggle(a2);
     if (this.prefs.mode === "3d") void this.render(view, a2);
     return a2;
+  }
+  ownsControls(view, a2, wand) {
+    return a2.alive && view.containerEl.isConnected && wand === a2.wand && !!wand?.isConnected && a2.button.parentElement === wand.parentElement && a2.toggle.parentElement === wand.parentElement && a2.options.length === 2 && a2.options.every((option) => option.parentElement === a2.toggle);
+  }
+  isCurrent(view, a2) {
+    return !this.unloaded && this.attached.get(view) === a2 && this.app.workspace.getLeavesOfType("graph").some((leaf) => leaf.view === view && !leaf.isDeferred) && this.ownsControls(view, a2, view.containerEl.querySelector(".graph-controls .graph-controls-button.mod-animate"));
   }
   stop(a2) {
     a2.request++;
@@ -31130,8 +31144,10 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
   }
   detach(a2) {
     a2.alive = false;
+    for (const cleanup of a2.cleanups.splice(0)) cleanup();
     this.stop(a2);
     a2.button.remove();
+    for (const option of a2.options) option.remove();
     a2.toggle.remove();
   }
   setMode(mode) {

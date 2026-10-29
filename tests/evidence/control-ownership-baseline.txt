@@ -1,0 +1,283 @@
+Captured Node output; trailing whitespace normalized for git diff checks.
+Baseline: 2642013; final persisted control-ownership suite; exit 1
+✖ connected cube does not conceal a removed toggle; fresh controls work and old listeners retire (41.231875ms)
+✖ stale control clicks before layout are inert: replace toolbar (10.646875ms)
+✖ stale control clicks before layout are inert: replace wand (8.387125ms)
+✖ stale control clicks before layout are inert: remove inventory (8.38475ms)
+✖ stale control clicks before layout are inert: detach pane (8.072917ms)
+✖ stale control clicks before layout are inert: defer pane (8.097792ms)
+✖ stale control clicks before layout are inert: move cube (7.401ms)
+✖ stale control clicks before layout are inert: move toggle (7.802667ms)
+✖ retired controls cannot change an independent surviving scene, including directly retained callbacks (9.3915ms)
+✖ unload releases native listeners and retained callbacks cannot save or revive; fresh enable works (8.398791ms)
+✖ reconciliation releases a retired scene and a delayed scan cannot recreate it (9.3615ms)
+✔ unchanged and duplicate pane deliveries preserve one functional control set and bounded listeners (7.661083ms)
+✖ removed individual mode button is inert and reconciliation restores a complete toggle (7.135375ms)
+✖ moved individual mode button is inert and reconciliation restores a complete toggle (6.7725ms)
+✖ replaced individual mode button is inert and reconciliation restores a complete toggle (6.844958ms)
+✖ detach and reattach cycles retire every old listener and preserve unrelated controls (7.420875ms)
+✔ late layout-ready and layout deliveries after unload create no controls (7.48775ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 2
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 366.922208
+
+✖ failing tests:
+
+test at tests/control-ownership.test.mjs:63:1
+✖ connected cube does not conceal a removed toggle; fresh controls work and old listeners retire (41.231875ms)
+  AssertionError [ERR_ASSERTION]: missing toggle must be replaced
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:66:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: replace toolbar (10.646875ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: replace wand (8.387125ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: remove inventory (8.38475ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: detach pane (8.072917ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: defer pane (8.097792ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: move cube (7.401ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:73:3
+✖ stale control clicks before layout are inert: move toggle (7.802667ms)
+  AssertionError [ERR_ASSERTION]: obsolete controls cannot save a global mode change
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:83:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:91:1
+✖ retired controls cannot change an independent surviving scene, including directly retained callbacks (9.3915ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  3 !== 1
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:99:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:104:1
+✖ unload releases native listeners and retained callbacks cannot save or revive; fresh enable works (8.398791ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  3 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:108:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:115:1
+✖ reconciliation releases a retired scene and a delayed scan cannot recreate it (9.3615ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:120:41)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:137:58
+✖ removed individual mode button is inert and reconciliation restores a complete toggle (7.135375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:143:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:137:58
+✖ moved individual mode button is inert and reconciliation restores a complete toggle (6.7725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:143:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:137:58
+✖ replaced individual mode button is inert and reconciliation restores a complete toggle (6.844958ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:143:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/control-ownership.test.mjs:151:1
+✖ detach and reattach cycles retire every old listener and preserve unrelated controls (7.420875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  6 !== 0
+
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/control-ownership.test.mjs:156:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

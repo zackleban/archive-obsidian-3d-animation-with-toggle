@@ -1,5 +1,7 @@
 # Local review checklist
 
+Latest local checkpoint: [Four-fix quality REVIEW — 2026-10-29](#four-fix-quality-review--2026-10-29). Earlier entries below remain dated history.
+
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
 ## Automated checks
@@ -89,3 +91,35 @@ Fresh `npm run qa` passes **48/48 tests**: ten behavior/graph, 28 existing lifec
 The existing real-app checklist remains open for native WebGL/context loss, physical input, popouts and minimum-version behavior. Tests do not certify allocations/handles that never return or cleanup failures before a dependency releases itself.
 
 Rechecked current official manifest, submission requirements, developer policies, plugin guidelines and submission instructions linked in this record. Local metadata, licensing and automated checks do not establish directory availability, minimum-version runtime compatibility or community approval. Production assets match the reviewed source and remain byte-identical to this review's starting candidate; `git diff --check` passes. No tests were added because no new implementation defect was reproduced. No app-access retry, installation, push, tag, release or submission occurred.
+
+## Four-fix quality REVIEW — 2026-10-29
+
+agent decision 2026-10-28: accept this bounded local REVIEW only after independent source/contract review and fresh checks; preserve live/community gates because synthetic hosts and local packaging cannot establish them.
+
+Corrected a reproduced control-ownership defect; details and baseline replay below. The other scene, graph-building and dependency behavior remains unchanged.
+
+Fresh `npm run qa` passed **65/65 tests**, TypeScript, production build and package checks. Configured official lint passed with zero warnings. This QA ran once for this REVIEW; standalone results across all seven are **382 tests**, plus **12 shared cases**. The preceding 365-plus-12 figure was an arithmetic intake expectation; the 17 new graph cases account for the difference.
+
+README installation/development requirements, manifest/package/lock/root-lock/version-map agreement, licenses/notices, dependency classification and production artifacts were checked against actual configuration. Current official [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin%20guidelines), [developer policies](https://docs.obsidian.md/community-directory/developer-policies), [submission requirements](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins), [manifest schema](https://docs.obsidian.md/Reference/Manifest) and [submission instructions](https://docs.obsidian.md/Plugins/Releasing/Submit%20your%20plugin) were rechecked. Declared minimums remain unverified runtime gates; local consistency is not hosted-scanner or community approval.
+
+Existing live checklists and recovery protocols above remain their sole homes; no app-access retry, personal-vault installation, push, tag, release or submission occurred. Production JS was rebuilt for the ownership repair; CSS, dependencies and metadata are unchanged.
+
+### Graph control ownership repair
+
+The planning lead was reproduced before production edits. At baseline `2642013`, a connected cube concealed a removed toggle; stale cube/mode handlers could save global mode and start or stop scenes after pane removal, toolbar/wand replacement or unload. The first persisted suite failed 11/12 cases. Independent review also reproduced the detached individual mode-button case; a moved-button check caught the intermediate repair leaving that owned node outside its toggle. The final suite replay against exported original source fails **15/17**, with two unchanged/delayed-layout controls passing. Raw baseline output is [tests/evidence/control-ownership-baseline.txt](../tests/evidence/control-ownership-baseline.txt).
+
+`Attached` now owns the exact wand, cube, toggle, two mode options and listener-removal callbacks. Reconciliation requires connected nondeferred current panes and complete direct-parent ownership. Clicks check current map/inventory/DOM identity before affecting mode or playback. Retirement invalidates ownership, removes listeners and all owned controls (including moved options), and uses existing scene cancellation/destruction. It adds no historical plugin-lifetime listener registry. Existing graph-data, scene and global-mode policy are unchanged.
+
+The 17 new tests use actual `src/main.ts` through lifecycle callbacks, native JSDOM listeners/clicks and measured saves/scene dispatch. They cover incomplete toggles, connected replaced toolbars/wands, disconnected/deferred/out-of-inventory panes, moved controls/options, retained callbacks, independent surviving panes, delayed scans, fresh enable, duplicate delivery and 30 detach/reattach cycles with exact active listener counts. The older accessible-control fixture now supplies the real wand selector and current host inventory; its assertions are unchanged. Candidate tests all pass; the 48 prior tests also pass in QA.
+
+Baseline replay (no checkout mutation):
+
+```sh
+graph_review_baseline=$(mktemp -d)
+trap 'rm -rf "$graph_review_baseline"' EXIT
+git show 2642013:src/main.ts > "$graph_review_baseline/main.ts"
+git show 2642013:src/vault-graph.ts > "$graph_review_baseline/vault-graph.ts"
+GRAPH_MAIN_SOURCE="$graph_review_baseline/main.ts" node --test tests/control-ownership.test.mjs
+```
+
+Expected baseline exit 1, 15 failures / 17 cases. Candidate: `node --test tests/control-ownership.test.mjs`, 17 pass. These commands do not run real Obsidian or WebGL. GraphScene, host inventory/events, icons/tooltips and vault scans are controlled doubles; scene-destroy counts establish dispatch, not native GPU release. Prior scene/dependency suites retain their separate evidence. Ownership is reconciled at delivered layout events and checked at clicks, not continuously; native event ordering, real DOM recreation/popouts and minimum-version behavior remain open in the existing real-app checklist. Include control replacement and unload/fresh-enable there when access permits.
