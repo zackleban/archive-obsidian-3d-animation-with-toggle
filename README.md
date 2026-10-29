@@ -26,7 +26,7 @@ Open the **global graph**, then close its graph-settings panel. Below the timela
 - Hold the left button still for a quarter-second, then drag to slide the picture without rotating it.
 - Hover a dot for its note and cluster names. Click a dot to open its note.
 
-The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin cancels pending loads and disposes its scene. If WebGL initialization fails, the plugin shows a notice and restores 2D.
+The top-left label shows the day, date, and note count. The legend identifies each cluster. Return to 2D to stop playback. Closing a pane or disabling the plugin cancels pending loads and disposes its scene. If scene initialization fails, the plugin releases resources already acquired, shows a notice, and restores 2D.
 
 ## Clusters and dates
 
@@ -44,11 +44,11 @@ The plugin reads local file metadata, resolved links, and folder/config-director
 
 - `npm run dev`: rebuild while editing.
 - `npm run lint`: official Obsidian ESLint rules and TypeScript-aware checks.
-- `npm test`: graph grouping, creation days, link deduplication, bounded folder scans, accessible controls, stale-load cancellation, and mocked WebGL failure handling.
+- `npm test`: graph grouping, creation days, link deduplication, bounded folder scans, accessible controls, stale-load cancellation, 2D fallback, and actual scene initialization/teardown with injected dependency failures.
 - `npm run build`: strict TypeScript check and production bundle.
 - `npm run qa`: all checks plus manifest/package/version and artifact validation.
 
-The controls attach to internal graph DOM selectors, which can change between Obsidian versions. Tests exercise data and lifecycle behavior with a mocked host; they do not certify native WebGL rendering. Real-app checks are listed in [docs/REVIEW.md](docs/REVIEW.md).
+The controls attach to internal graph DOM selectors, which can change between Obsidian versions. Tests exercise the actual scene constructor with an instrumented renderer, controls, observer, DOM and scheduler, plus separate checks using the installed TrackballControls implementation. They do not certify native WebGL rendering. Real-app checks are listed in [docs/REVIEW.md](docs/REVIEW.md).
 
 ## License
 

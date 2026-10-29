@@ -35,11 +35,11 @@ export const obsidian = {
   debounce: (fn) => Object.assign(fn, { cancel() {} }),
   setIcon() {}, setTooltip() {},
 };
-export async function load(source, extra = {}, scene = undefined) {
-  const result = await build({ entryPoints: [source], bundle: true, write: false, platform: "node", format: "cjs", external: ["obsidian", "__scene__"], plugins: scene ? [{ name: "scene-mock", setup(build) { build.onResolve({filter: /^\.\/scene$/}, () => ({path: "__scene__", external: true})); } }] : [] });
+export async function load(source, extra = {}, scene = undefined, dependencies = {}) {
+  const result = await build({ entryPoints: [source], bundle: true, write: false, platform: "node", format: "cjs", external: ["obsidian", "__scene__", ...Object.keys(dependencies)], plugins: scene ? [{ name: "scene-mock", setup(build) { build.onResolve({filter: /^\.\/scene$/}, () => ({path: "__scene__", external: true})); } }] : [] });
   const mod = new Module(resolve(source));
   const require = createRequire(import.meta.url);
-  mod.require = (id) => id === "obsidian" ? {...obsidian, ...extra} : id === "__scene__" ? scene : require(id);
+  mod.require = (id) => id === "obsidian" ? {...obsidian, ...extra} : id === "__scene__" ? scene : Object.hasOwn(dependencies, id) ? dependencies[id] : require(id);
   mod._compile(result.outputFiles[0].text, resolve(source));
   return mod.exports;
 }

@@ -30531,6 +30531,8 @@ var GraphScene = class {
     this.lastFrame = performance.now();
     this.dots = null;
     this.lines = null;
+    this.cleanups = [];
+    this.destroyed = false;
     this.frame = 0;
     this.graph = null;
     this.nodes = [];
@@ -30554,6 +30556,7 @@ var GraphScene = class {
     this.grabbedAt = null;
     this.zoom = null;
     this.loop = () => {
+      if (this.destroyed) return;
       this.frame = this.el.win.requestAnimationFrame(this.loop);
       const now2 = performance.now();
       const graph = this.graph;
@@ -30584,46 +30587,64 @@ var GraphScene = class {
       this.renderer.render(this.scene, this.camera);
     };
     this.el = parent.createDiv("three-d-overlay");
-    this.canvasHost = this.el.createDiv("three-d-canvas");
-    this.dayEl = this.el.createDiv("three-d-day");
-    this.legendEl = this.el.createDiv("three-d-legend");
-    this.tipEl = this.el.createDiv("three-d-tip");
+    this.cleanups.push(() => this.el.remove());
     try {
+      this.canvasHost = this.el.createDiv("three-d-canvas");
+      this.dayEl = this.el.createDiv("three-d-day");
+      this.legendEl = this.el.createDiv("three-d-legend");
+      this.tipEl = this.el.createDiv("three-d-tip");
       this.renderer = new WebGLRenderer({ antialias: true, alpha: true });
+      const renderer = this.renderer;
+      this.cleanups.push(() => renderer.forceContextLoss(), () => renderer.dispose());
+      renderer.setPixelRatio(Math.min(2, this.el.win.devicePixelRatio));
+      renderer.setClearColor(0, 0);
+      this.canvasHost.appendChild(renderer.domElement);
+      this.scene.add(new AmbientLight(16777215, 1.6));
+      const sun = new DirectionalLight(16777215, 1.4);
+      sun.position.set(1, 2, 3);
+      this.camera.add(sun);
+      this.scene.add(this.camera);
+      this.camera.position.set(0, 0, 400);
+      this.controls = new TrackballControls(this.camera);
+      const controls = this.controls;
+      this.cleanups.push(() => {
+        if (controls.domElement) controls.dispose();
+      });
+      controls.connect(renderer.domElement);
+      controls.rotateSpeed = 2.5;
+      controls.dynamicDampingFactor = 0.12;
+      const stopFollowing = () => {
+        this.follow = false;
+      };
+      this.cleanups.push(() => controls.removeEventListener("start", stopFollowing));
+      controls.addEventListener("start", stopFollowing);
+      const canvas = renderer.domElement;
+      const listen = (type, handler) => {
+        this.cleanups.push(() => canvas.removeEventListener(type, handler));
+        canvas.addEventListener(type, handler);
+      };
+      listen("pointermove", (e) => this.onMove(e));
+      listen("pointerleave", () => this.setHover(-1));
+      listen("pointerdown", (e) => this.onDown(e));
+      listen("pointerup", (e) => this.onUp(e));
+      listen("pointercancel", () => {
+        this.downAt = null;
+        this.release();
+      });
+      listen("dblclick", (e) => this.onDoubleClick(e));
+      const resize = new ResizeObserver(() => this.fit());
+      this.cleanups.push(() => resize.disconnect());
+      resize.observe(this.el);
+      this.fit();
+      this.loop();
     } catch (error2) {
-      this.el.remove();
+      this.destroy();
       throw error2;
     }
-    this.renderer.setPixelRatio(Math.min(2, this.el.win.devicePixelRatio));
-    this.renderer.setClearColor(0, 0);
-    this.canvasHost.appendChild(this.renderer.domElement);
-    this.scene.add(new AmbientLight(16777215, 1.6));
-    const sun = new DirectionalLight(16777215, 1.4);
-    sun.position.set(1, 2, 3);
-    this.camera.add(sun);
-    this.scene.add(this.camera);
-    this.camera.position.set(0, 0, 400);
-    this.controls = new TrackballControls(this.camera, this.renderer.domElement);
-    this.controls.rotateSpeed = 2.5;
-    this.controls.dynamicDampingFactor = 0.12;
-    this.controls.addEventListener("start", () => this.follow = false);
-    const canvas = this.renderer.domElement;
-    canvas.addEventListener("pointermove", (e) => this.onMove(e));
-    canvas.addEventListener("pointerleave", () => this.setHover(-1));
-    canvas.addEventListener("pointerdown", (e) => this.onDown(e));
-    canvas.addEventListener("pointerup", (e) => this.onUp(e));
-    canvas.addEventListener("pointercancel", () => {
-      this.downAt = null;
-      this.release();
-    });
-    canvas.addEventListener("dblclick", (e) => this.onDoubleClick(e));
-    this.resize = new ResizeObserver(() => this.fit());
-    this.resize.observe(this.el);
-    this.fit();
-    this.loop();
   }
   // Shows the whole vault as it is now.
   show(graph) {
+    if (this.destroyed) return;
     this.running = false;
     this.follow = true;
     this.spinning = false;
@@ -30632,6 +30653,7 @@ var GraphScene = class {
   }
   // Plays the vault from day one.
   play(graph) {
+    if (this.destroyed) return;
     this.load(graph);
     this.running = true;
     this.follow = true;
@@ -30646,21 +30668,29 @@ var GraphScene = class {
     return this.running;
   }
   recolor() {
+    if (this.destroyed) return;
     if (!this.graph || !this.dots || !this.lines) return;
     this.lines.material.color.set(this.cssColor("var(--graph-line, var(--text-faint))"));
     this.paintDots();
   }
   destroy() {
-    this.el.win.cancelAnimationFrame(this.frame);
-    this.el.win.clearTimeout(this.openTimer);
-    this.el.win.clearTimeout(this.holdTimer);
-    this.resize.disconnect();
-    this.sim?.stop();
-    this.controls.dispose();
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.running = false;
+    this.cleanup(() => this.el.win.cancelAnimationFrame(this.frame));
+    this.cleanup(() => this.el.win.clearTimeout(this.openTimer));
+    this.cleanup(() => this.el.win.clearTimeout(this.holdTimer));
+    this.cleanup(() => this.sim?.stop());
+    this.sim = null;
     this.clearMeshes();
-    this.renderer.dispose();
-    this.renderer.forceContextLoss();
-    this.el.remove();
+    for (const cleanup of this.cleanups.splice(0).reverse()) this.cleanup(cleanup);
+  }
+  cleanup(action) {
+    try {
+      action();
+    } catch (error2) {
+      console.error("3D Animation with Toggle: scene cleanup failed", error2);
+    }
   }
   load(graph) {
     this.el.win.clearTimeout(this.openTimer);
@@ -30814,7 +30844,9 @@ var GraphScene = class {
     this.el.win.clearTimeout(this.holdTimer);
     if (e.button !== 0) return;
     this.downAt = { x: e.clientX, y: e.clientY };
-    this.holdTimer = this.el.win.setTimeout(() => this.grab(e.clientX, e.clientY), HOLD_MS);
+    this.holdTimer = this.el.win.setTimeout(() => {
+      if (!this.destroyed) this.grab(e.clientX, e.clientY);
+    }, HOLD_MS);
   }
   // From here until the button comes up, the drag slides the picture and never turns it.
   grab(x2, y2) {
@@ -30877,7 +30909,9 @@ var GraphScene = class {
     const note = hit?.instanceId !== void 0 ? this.graph?.notes[hit.instanceId] : void 0;
     if (!note) return;
     this.el.win.clearTimeout(this.openTimer);
-    this.openTimer = this.el.win.setTimeout(() => this.hooks.open(note.path), CLICK_WAIT_MS);
+    this.openTimer = this.el.win.setTimeout(() => {
+      if (!this.destroyed) this.hooks.open(note.path);
+    }, CLICK_WAIT_MS);
   }
   // Zooms around the spot under the mouse: that spot stays where it is on screen while everything else closes in.
   onDoubleClick(e) {
@@ -30914,6 +30948,7 @@ var GraphScene = class {
     return ray;
   }
   fit() {
+    if (this.destroyed) return;
     const w = Math.max(1, this.el.clientWidth);
     const h = Math.max(1, this.el.clientHeight);
     this.renderer.setSize(w, h, false);
@@ -30930,14 +30965,15 @@ var GraphScene = class {
     return color || "#888888";
   }
   clearMeshes() {
-    for (const mesh of [this.dots, this.lines]) {
-      if (!mesh) continue;
-      this.scene.remove(mesh);
-      mesh.geometry.dispose();
-      mesh.material.dispose();
-    }
+    const meshes = [this.dots, this.lines];
     this.dots = null;
     this.lines = null;
+    for (const mesh of meshes) {
+      if (!mesh) continue;
+      this.cleanup(() => this.scene.remove(mesh));
+      this.cleanup(() => mesh.geometry.dispose());
+      this.cleanup(() => mesh.material.dispose());
+    }
   }
 };
 
