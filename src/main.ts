@@ -85,8 +85,9 @@ export default class ThreeDAnimationPlugin extends Plugin {
 	private stop(a: Attached) {
 		a.request++;
 		a.loadingAnimation = false;
-		a.scene?.destroy();
+		const scene = a.scene;
 		a.scene = null;
+		scene?.destroy();
 		a.button.removeClass("is-running");
 	}
 
@@ -122,6 +123,11 @@ export default class ThreeDAnimationPlugin extends Plugin {
 			a.scene = new GraphScene(content, {
 				open: (path) => { void this.app.workspace.openLinkText(path, "", false).catch((error: unknown) => this.report(error)); },
 				ended: () => { a.button.removeClass("is-running"); this.refreshAll(); },
+				failed: (scene, error) => {
+					if (this.unloaded || !a.alive || a.scene !== scene) return;
+					this.setMode("2d");
+					this.report(error);
+				},
 			});
 		}
 		return a.scene;
@@ -161,8 +167,11 @@ export default class ThreeDAnimationPlugin extends Plugin {
 	}
 
 	private report(error: unknown) {
-		console.error("3D Animation with Toggle:", error);
-		new Notice("Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.");
+		// Either diagnostic channel may fail independently; neither may break recovery.
+		try { console.error("3D Animation with Toggle:", error); } catch { /* Best-effort logging. */ }
+		try {
+			new Notice("Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.");
+		} catch { /* Best-effort notice. */ }
 	}
 }
 

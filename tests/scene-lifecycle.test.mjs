@@ -3,14 +3,14 @@ import assert from "node:assert/strict";
 import * as THREE from "three";
 import moment from "moment";
 import { JSDOM } from "jsdom";
-import { load } from "./helpers.mjs";
+import { load, TFile, TFolder, notices } from "./helpers.mjs";
 
 // Actual GraphScene and Three scene/math; only platform/resource boundaries are doubles.
 async function fixture(failure = null, cleanupFailure = null) {
   const dom = new JSDOM('<main></main>');
   const { window } = dom;
   const { document, HTMLElement } = window;
-  const state = { failure, cleanupFailure, calls: {}, opened: [], ended: 0, renderers: [], controls: [], observers: [], listeners: new Set(), frames: new Map(), timers: new Map(), callbacks: [] };
+  const state = { failure, cleanupFailure, calls: {}, opened: [], ended: 0, failures: [], renderers: [], controls: [], observers: [], listeners: new Set(), frames: new Map(), timers: new Map(), callbacks: [] };
   const injected = Error(`injected ${failure}`);
   const cleanupError = Error(`injected cleanup ${cleanupFailure}`);
   let sequence = 0;
@@ -24,7 +24,7 @@ async function fixture(failure = null, cleanupFailure = null) {
     call(`dom.create.${typeof options === "string" ? options : options.cls ?? tag}`);
     const element = document.createElement(tag);
     if (typeof options === "string") element.className = options;
-    else { element.className = options.cls ?? ""; element.textContent = options.text ?? ""; }
+    else { element.className = options.cls ?? ""; element.textContent = options.text ?? ""; for (const [key, value] of Object.entries(options.attr ?? {})) element.setAttribute(key, value); }
     this.append(element);
     return element;
   };
@@ -99,11 +99,14 @@ async function fixture(failure = null, cleanupFailure = null) {
   }
   const previousObserver = Object.getOwnPropertyDescriptor(globalThis, "ResizeObserver");
   globalThis.ResizeObserver = Observer;
-  const { GraphScene } = await load("src/scene.ts", { moment }, undefined, { three: { ...THREE, WebGLRenderer: Renderer }, "three/examples/jsm/controls/TrackballControls.js": { TrackballControls: Controls } });
+  const dependencies = { three: { ...THREE, WebGLRenderer: Renderer }, "three/examples/jsm/controls/TrackballControls.js": { TrackballControls: Controls } };
+  const { GraphScene } = await load("src/scene.ts", { moment }, undefined, dependencies);
   const parent = document.querySelector("main");
   return {
     state, injected, cleanupError, parent, window,
-    create: () => new GraphScene(parent, { open(path) { state.opened.push(path); }, ended() { state.ended++; } }),
+    create: (hooks = {}) => new GraphScene(parent, { open(path) { state.opened.push(path); }, ended() { state.ended++; }, failed(scene, error) { state.failures.push({ scene, error }); }, ...hooks }),
+    loadPlugin: (extra = {}) => load("src/main.ts", { moment, ...extra }, undefined, dependencies),
+    frame() { const [id, callback] = state.frames.entries().next().value; state.frames.delete(id); callback(); return callback; },
     restore() { if (previousObserver) Object.defineProperty(globalThis, "ResizeObserver", previousObserver); else delete globalThis.ResizeObserver; window.close(); },
   };
 }
@@ -144,6 +147,7 @@ for (const stage of failureStages) {
     try {
       assert.throws(f.create, error => error === f.injected);
       assert.equal(f.state.calls[stage], 1, "the injection stage was reached");
+      assert.deepEqual(f.state.failures, [], "constructor errors propagate without a scheduled-failure notification");
       assertReleased(f);
       f.state.failure = null;
       const retry = f.create();
@@ -251,5 +255,200 @@ for (const throwOnGeometryDispose of [false, true]) {
       assert.equal(scene.lines, null);
       if (throwOnGeometryDispose) assert.ok(logs.flat().includes(disposalError));
     } finally { console.error = originalError; f.restore(); }
+  });
+}
+
+
+const syntheticGraph = () => ({ groups: ["Synthetic"], notes: [
+  { path: "Synthetic/one.md", name: "one", group: 0, day: 1, degree: 1 },
+  { path: "Synthetic/two.md", name: "two", group: 0, day: 2, degree: 1 },
+], links: [[0, 1]], days: 2, start: Date.now() });
+
+for (const stage of ["controls.update", "renderer.render"]) {
+  test(`scheduled frame contains ${stage} after successful setup and releases loaded resources`, async () => {
+    const f = await fixture();
+    let scene, retry;
+    try {
+      f.window.getComputedStyle = () => ({ color: "rgb(136, 136, 136)" });
+      scene = f.create();
+      scene.show(syntheticGraph());
+      f.frame(); // A successful queued frame, beyond the constructor's synchronous invocation.
+      const resources = [scene.dots.geometry, scene.dots.material, scene.lines.geometry, scene.lines.material];
+      const disposed = [];
+      for (const resource of resources) resource.addEventListener("dispose", () => disposed.push(resource));
+      const sim = scene.sim;
+      const stop = sim.stop.bind(sim);
+      let stopped = 0;
+      sim.stop = () => { stopped++; return stop(); };
+      const canvas = f.state.renderers[0].domElement;
+      scene.rayAt = () => ({ intersectObject: () => [{ instanceId: 0 }] });
+      canvas.dispatchEvent(new f.window.MouseEvent("pointerdown", { button: 0 }));
+      canvas.dispatchEvent(new f.window.MouseEvent("pointerup", { button: 0 }));
+      canvas.dispatchEvent(new f.window.MouseEvent("pointerdown", { button: 0 }));
+      const timers = [...f.state.timers.values()];
+      assert.equal(timers.length, 2);
+      const oldFrame = [...f.state.frames.values()][0];
+      f.state.failure = stage;
+      // Capture baseline leakage before asserting exception containment.
+      let escaped;
+      try { f.frame(); } catch (error) { escaped = error; }
+      assertReleased(f);
+      assert.equal(escaped, undefined);
+      assert.deepEqual(f.state.failures, [{ scene, error: f.injected }]);
+      assert.equal(stopped, 1);
+      assert.deepEqual(disposed, resources);
+      const calls = { ...f.state.calls };
+      oldFrame(); oldFrame(); timers.forEach(callback => callback()); f.state.observers[0].callback();
+      scene.destroy(); scene.show(syntheticGraph()); scene.play(syntheticGraph());
+      assert.deepEqual(f.state.calls, calls);
+      assert.equal(f.state.failures.length, 1);
+      assert.deepEqual(f.state.opened, []);
+      f.state.failure = null;
+      retry = f.create();
+      retry.play(syntheticGraph()); f.frame();
+      assert.equal(retry.isRunning, true);
+      retry.destroy();
+      assertReleased(f);
+    } finally { retry?.destroy(); scene?.destroy(); f.restore(); }
+  });
+}
+
+const flush = () => new Promise(resolve => setImmediate(resolve));
+async function pluginFixture(extra = {}) {
+  const f = await fixture();
+  f.window.getComputedStyle = () => ({ color: "rgb(136, 136, 136)" });
+  const { default: Plugin } = await f.loadPlugin(extra);
+  const file = new TFile("Synthetic/one.md"); file.stat = { ctime: Date.now() };
+  const events = new Map();
+  const app = {
+    vault: { getMarkdownFiles: () => [file], getName: () => "Synthetic", getRoot: () => ({ children: [] }), getAllFolders: () => [], configDir: ".obsidian", adapter: { exists: async () => false }, on: (name, fn) => { events.set(name, fn); return {}; } },
+    metadataCache: { resolvedLinks: {}, on: (name, fn) => { events.set(name, fn); return {}; } },
+    workspace: { getLeavesOfType: () => views.map(view => ({ view })), on: (name, fn) => { events.set(name, fn); return {}; }, onLayoutReady: fn => fn(), openLinkText: async () => {} },
+  };
+  const views = [0, 1].map(() => {
+    const containerEl = f.parent.createDiv();
+    containerEl.innerHTML = '<div class="view-content"><div class="core-2d">Core graph</div><div class="graph-controls"><button class="graph-controls-button mod-animate"></button></div></div>';
+    return { containerEl };
+  });
+  const plugin = new Plugin(app);
+  await plugin.onload();
+  return { ...f, app, plugin, views, events };
+}
+
+test("actual plugin and scene restore 2D once after a scheduled failure; pending scans cannot retry", async () => {
+  const f = await pluginFixture();
+  const log = console.error, logs = []; console.error = (...args) => logs.push(args);
+  const noticeStart = notices.length;
+  try {
+    f.plugin.setMode("3d"); await flush();
+    const attached = [...f.plugin.attached.values()];
+    const old = attached[0].scene;
+    assert.ok(old?.dots, "actual scene has loaded graph meshes");
+    const oldFrame = [...f.state.frames.values()][0];
+    const releases = [];
+    f.app.vault.getAllFolders = () => [new TFolder("Slow")];
+    f.app.vault.adapter.exists = () => new Promise(resolve => releases.push(resolve));
+    f.events.get("resolved")(); // pending idle refreshes in both panes
+    const play = f.plugin.render(f.views[0], attached[0], true); // pending animation supersedes one refresh
+    assert.equal(releases.length, 3);
+    f.state.failure = "renderer.render";
+    let escaped;
+    try { f.frame(); } catch (error) { escaped = error; }
+    assert.equal(f.plugin.prefs.mode, "2d");
+    assert.equal(escaped, undefined);
+    assertReleased(f);
+    assert.equal(notices.length - noticeStart, 1);
+    assert.equal(logs.filter(args => args.includes(f.injected)).length, 1);
+    assert.equal(f.plugin.saved.mode, "2d");
+    for (const a of attached) {
+      assert.equal(a.scene, null); assert.equal(a.loadingAnimation, false);
+      assert.equal(a.button.classList.contains("is-running"), false);
+      assert.equal(a.toggle.querySelector('[data-mode="2d"]').getAttribute("aria-pressed"), "true");
+    }
+    assert.equal(f.parent.querySelectorAll(".core-2d").length, 2);
+    releases.forEach(resolve => resolve(false)); await play; await flush();
+    f.events.get("resolved")(); f.events.get("layout-change")(); oldFrame(); oldFrame();
+    assertReleased(f);
+    assert.equal(notices.length - noticeStart, 1);
+    f.state.failure = null;
+    f.app.vault.getAllFolders = () => [];
+    attached[0].button.click(); await flush(); // deliberate user retry with playback
+    const replacement = attached[0].scene;
+    assert.ok(replacement && replacement !== old);
+    assert.equal(replacement.isRunning, true);
+    old.hooks.failed?.(old, Error("stale old scene failure")); oldFrame();
+    assert.equal(attached[0].scene, replacement);
+    assert.equal(f.plugin.prefs.mode, "3d");
+    assert.equal(notices.length - noticeStart, 1);
+    f.frame();
+    const currentFrame = [...f.state.frames.values()][0];
+    const sibling = attached[1].scene;
+    f.plugin.detach(attached[0]);
+    replacement.hooks.failed(replacement, Error("failure after detach")); currentFrame();
+    assert.equal(attached[1].scene, sibling);
+    assert.equal(f.plugin.prefs.mode, "3d");
+    f.plugin.onunload(); f.plugin.onunload();
+    sibling.hooks.failed(sibling, Error("failure after unload")); currentFrame();
+    f.events.get("resolved")(); f.events.get("layout-change")(); await flush();
+    assertReleased(f);
+    assert.equal(notices.length - noticeStart, 1);
+  } finally { f.plugin.onunload(); console.error = log; f.restore(); }
+});
+
+
+test("scheduled failure releases resources even when cleanup, failure hook and diagnostics throw", async () => {
+  const f = await fixture();
+  let scene;
+  const log = console.error;
+  const reported = [];
+  let releaseError;
+  try {
+    scene = f.create({ failed(failedScene, error) {
+      reported.push({ scene: failedScene, error });
+      // Assert outside the intentionally contained hook, so production cannot swallow a test failure.
+      try { assertReleased(f); } catch (error) { releaseError = error; }
+      scene.destroy(); // Reentrant teardown must be harmless.
+      throw Error("failure hook rejected");
+    } });
+    const retained = [...f.state.frames.values()][0];
+    f.state.failure = "controls.update";
+    f.state.cleanupFailure = "controls.dispose"; // Releases its listeners, then throws.
+    console.error = () => { throw Error("logger rejected"); };
+    assert.doesNotThrow(() => f.frame());
+    assertReleased(f);
+    retained(); retained(); scene.destroy();
+    assert.deepEqual(reported, [{ scene, error: f.injected }]);
+    assert.equal(releaseError, undefined, "release completes before reporting");
+  } finally { console.error = log; scene?.destroy(); f.restore(); }
+});
+
+for (const failingChannel of ["console", "notice", "both"]) {
+  test(`actual plugin frame fallback survives ${failingChannel} reporting failure and a cleanup exception`, async () => {
+    let noticeAttempts = 0;
+    const f = await pluginFixture({ Notice: class { constructor() {
+      noticeAttempts++;
+      if (failingChannel !== "console") throw Error("notice unavailable");
+    } } });
+    const log = console.error, logs = [];
+    console.error = (...args) => {
+      logs.push(args);
+      if (failingChannel !== "notice") throw Error("console unavailable");
+    };
+    try {
+      f.plugin.setMode("3d"); await flush();
+      const retained = [...f.state.frames.values()];
+      f.state.failure = "renderer.render";
+      f.state.cleanupFailure = "observer.disconnect";
+      assert.doesNotThrow(() => f.frame());
+      assertReleased(f);
+      assert.equal(f.plugin.prefs.mode, "2d");
+      assert.equal(f.plugin.saved.mode, "2d");
+      assert.equal(noticeAttempts, 1);
+      assert.equal(logs.filter(args => args.includes(f.injected)).length, 1);
+      assert.equal(logs.filter(args => args.includes(f.cleanupError)).length, 2);
+      retained.forEach(callback => callback()); f.events.get("resolved")(); await flush();
+      assertReleased(f);
+      assert.equal(noticeAttempts, 1);
+    } finally { f.plugin.onunload(); console.error = log; f.restore(); }
   });
 }

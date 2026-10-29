@@ -36,6 +36,8 @@ export interface SceneHooks {
 	open(path: string): void;
 	// Called when a run reaches its last day.
 	ended(): void;
+	// Scheduled-frame failures only; construction still throws to the caller.
+	failed(scene: GraphScene, error: unknown): void;
 }
 
 export class GraphScene {
@@ -134,7 +136,7 @@ export class GraphScene {
 			this.cleanups.push(() => resize.disconnect());
 			resize.observe(this.el);
 			this.fit();
-			this.loop();
+			this.advance();
 		} catch (error) {
 			this.destroy();
 			throw error;
@@ -190,12 +192,12 @@ export class GraphScene {
 		for (const cleanup of this.cleanups.splice(0).reverse()) this.cleanup(cleanup);
 	}
 
-	private cleanup(action: () => void) {
+	private cleanup(action: () => void, message = "scene cleanup failed") {
 		try {
 			action();
 		} catch (error) {
-			// Continue releasing other resources and preserve the initialization error.
-			console.error("3D Animation with Toggle: scene cleanup failed", error);
+			// Diagnostics must never interrupt teardown or replace the original failure.
+			try { console.error(`3D Animation with Toggle: ${message}`, error); } catch { /* Reporting is best-effort. */ }
 		}
 	}
 
@@ -297,6 +299,17 @@ export class GraphScene {
 
 	private loop = () => {
 		if (this.destroyed) return;
+		try {
+			this.advance();
+		} catch (error) {
+			// Mark destroyed and release ownership before notifying: retained callbacks are inert.
+			this.destroy();
+			this.cleanup(() => this.hooks.failed(this, error), "scene failure reporting failed");
+		}
+	};
+
+	private advance() {
+		if (this.destroyed) return;
 		this.frame = this.el.win.requestAnimationFrame(this.loop);
 		const now = performance.now();
 		const graph = this.graph;
@@ -326,7 +339,7 @@ export class GraphScene {
 		this.stepZoom(now);
 		this.controls.update();
 		this.renderer.render(this.scene, this.camera);
-	};
+	}
 
 	private place(now: number) {
 		const graph = this.graph;

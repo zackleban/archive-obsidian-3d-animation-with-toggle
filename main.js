@@ -30557,34 +30557,12 @@ var GraphScene = class {
     this.zoom = null;
     this.loop = () => {
       if (this.destroyed) return;
-      this.frame = this.el.win.requestAnimationFrame(this.loop);
-      const now2 = performance.now();
-      const graph = this.graph;
-      if (graph && this.running) {
-        const t = Math.min(1, (now2 - this.runStart) / this.runMs);
-        const day = Math.max(1, Math.ceil(t * graph.days));
-        this.grow(this.countThrough(day), true);
-        this.drawDay(day);
-        if (t >= 1) {
-          this.running = false;
-          this.spinning = false;
-          this.hooks.ended();
-        }
-      } else if (graph) {
-        this.drawDay(graph.days);
+      try {
+        this.advance();
+      } catch (error2) {
+        this.destroy();
+        this.cleanup(() => this.hooks.failed(this, error2), "scene failure reporting failed");
       }
-      if (this.sim && this.sim.alpha() > this.sim.alphaMin()) this.sim.tick();
-      this.place(now2);
-      if (this.follow) this.frameAll();
-      if (this.spinning && !this.grabbedAt) {
-        const turn = SPIN * Math.min(100, now2 - this.lastFrame) / 1e3;
-        this.camera.position.sub(this.controls.target).applyAxisAngle(this.camera.up, turn).add(this.controls.target);
-        this.camera.lookAt(this.controls.target);
-      }
-      this.lastFrame = now2;
-      this.stepZoom(now2);
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
     };
     this.el = parent.createDiv("three-d-overlay");
     this.cleanups.push(() => this.el.remove());
@@ -30636,7 +30614,7 @@ var GraphScene = class {
       this.cleanups.push(() => resize.disconnect());
       resize.observe(this.el);
       this.fit();
-      this.loop();
+      this.advance();
     } catch (error2) {
       this.destroy();
       throw error2;
@@ -30685,11 +30663,14 @@ var GraphScene = class {
     this.clearMeshes();
     for (const cleanup of this.cleanups.splice(0).reverse()) this.cleanup(cleanup);
   }
-  cleanup(action) {
+  cleanup(action, message = "scene cleanup failed") {
     try {
       action();
     } catch (error2) {
-      console.error("3D Animation with Toggle: scene cleanup failed", error2);
+      try {
+        console.error(`3D Animation with Toggle: ${message}`, error2);
+      } catch {
+      }
     }
   }
   load(graph) {
@@ -30770,6 +30751,37 @@ var GraphScene = class {
     let n = 0;
     while (n < notes.length && notes[n].day <= day) n++;
     return n;
+  }
+  advance() {
+    if (this.destroyed) return;
+    this.frame = this.el.win.requestAnimationFrame(this.loop);
+    const now2 = performance.now();
+    const graph = this.graph;
+    if (graph && this.running) {
+      const t = Math.min(1, (now2 - this.runStart) / this.runMs);
+      const day = Math.max(1, Math.ceil(t * graph.days));
+      this.grow(this.countThrough(day), true);
+      this.drawDay(day);
+      if (t >= 1) {
+        this.running = false;
+        this.spinning = false;
+        this.hooks.ended();
+      }
+    } else if (graph) {
+      this.drawDay(graph.days);
+    }
+    if (this.sim && this.sim.alpha() > this.sim.alphaMin()) this.sim.tick();
+    this.place(now2);
+    if (this.follow) this.frameAll();
+    if (this.spinning && !this.grabbedAt) {
+      const turn = SPIN * Math.min(100, now2 - this.lastFrame) / 1e3;
+      this.camera.position.sub(this.controls.target).applyAxisAngle(this.camera.up, turn).add(this.controls.target);
+      this.camera.lookAt(this.controls.target);
+    }
+    this.lastFrame = now2;
+    this.stepZoom(now2);
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
   }
   place(now2) {
     const graph = this.graph;
@@ -31111,8 +31123,9 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
   stop(a2) {
     a2.request++;
     a2.loadingAnimation = false;
-    a2.scene?.destroy();
+    const scene = a2.scene;
     a2.scene = null;
+    scene?.destroy();
     a2.button.removeClass("is-running");
   }
   detach(a2) {
@@ -31148,6 +31161,11 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
         ended: () => {
           a2.button.removeClass("is-running");
           this.refreshAll();
+        },
+        failed: (scene, error2) => {
+          if (this.unloaded || !a2.alive || a2.scene !== scene) return;
+          this.setMode("2d");
+          this.report(error2);
         }
       });
     }
@@ -31185,8 +31203,14 @@ var ThreeDAnimationPlugin = class extends import_obsidian3.Plugin {
     }
   }
   report(error2) {
-    console.error("3D Animation with Toggle:", error2);
-    new import_obsidian3.Notice("Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.");
+    try {
+      console.error("3D Animation with Toggle:", error2);
+    } catch {
+    }
+    try {
+      new import_obsidian3.Notice("Could not update the 3D graph. Check WebGL support and vault access; the 2D graph remains available.");
+    } catch {
+    }
   }
 };
 function shapeOf(graph) {
