@@ -1,0 +1,124 @@
+Source: b5cf8ba82d29578dc75a9c7a27e168d988d6a346:src/scene.ts
+Command: node --test tests/neighbor-lookup.test.mjs
+Exit: 1
+Counters are operations, not timings. Runner durations below are not performance evidence. Trailing whitespace normalized.
+
+✖ bounded initial show: 100-note chain (3.682625ms)
+ℹ {"notes":100,"links":99,"batches":1,"loadLinks":0,"neighborLinks":9900,"incidentEntries":0,"calls":100,"storedEntries":0}
+✖ bounded ten-batch playback: 100-note chain (2.222333ms)
+ℹ {"notes":100,"links":99,"batches":10,"loadLinks":0,"neighborLinks":9459,"incidentEntries":0,"calls":100,"storedEntries":0}
+✖ bounded initial show: 1000-note chain (77.80725ms)
+ℹ {"notes":1000,"links":999,"batches":1,"loadLinks":0,"neighborLinks":999000,"incidentEntries":0,"calls":1000,"storedEntries":0}
+✖ bounded ten-batch playback: 1000-note chain (80.847459ms)
+ℹ {"notes":1000,"links":999,"batches":10,"loadLinks":0,"neighborLinks":994509,"incidentEntries":0,"calls":1000,"storedEntries":0}
+✔ show exactly matches legacy placement, pop, link activation and drawing with deterministic input (1.806208ms)
+✔ playback exactly matches legacy placement, pop, link activation and drawing with deterministic input (0.666958ms)
+✔ skipped days exactly matches legacy placement, pop, link activation and drawing with deterministic input (0.5225ms)
+✔ graph ordering and first eligible neighbor preserve metadata tie order and prior-batch eligibility (5.394709ms)
+✖ replay and replacement release old indexes; destruction is inert and releases the current index (0.406666ms)
+✔ scheduled playback retains one tick per frame, duration bounds, completion and node cap (0.740125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 5
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 263.556042
+
+✖ failing tests:
+
+test at tests/neighbor-lookup.test.mjs:87:5
+✖ bounded initial show: 100-note chain (3.682625ms)
+  AssertionError [ERR_ASSERTION]: birth lookup visits at most the incident entries across one population
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/neighbor-lookup.test.mjs:100:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/neighbor-lookup.test.mjs:87:5
+✖ bounded ten-batch playback: 100-note chain (2.222333ms)
+  AssertionError [ERR_ASSERTION]: birth lookup visits at most the incident entries across one population
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/neighbor-lookup.test.mjs:100:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/neighbor-lookup.test.mjs:87:5
+✖ bounded initial show: 1000-note chain (77.80725ms)
+  AssertionError [ERR_ASSERTION]: birth lookup visits at most the incident entries across one population
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/neighbor-lookup.test.mjs:100:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/neighbor-lookup.test.mjs:87:5
+✖ bounded ten-batch playback: 1000-note chain (80.847459ms)
+  AssertionError [ERR_ASSERTION]: birth lookup visits at most the incident entries across one population
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/neighbor-lookup.test.mjs:100:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/neighbor-lookup.test.mjs:161:1
+✖ replay and replacement release old indexes; destruction is inert and releases the current index (0.406666ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+
+  undefined
+      at TestContext.<anonymous> (file:///Users/maxogalactic/side-projects/obsidian-3d-animation-with-toggle/tests/neighbor-lookup.test.mjs:170:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

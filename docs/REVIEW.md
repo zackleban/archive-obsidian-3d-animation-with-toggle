@@ -1,6 +1,6 @@
 # Local review checklist
 
-Latest local checkpoint: [Confirmation and ownership REVIEW — 2026-10-29](#confirmation-and-ownership-review--2026-10-29). Earlier entries below remain dated history.
+Latest local checkpoint: [Bounded neighbor lookup — 2026-10-29](#bounded-neighbor-lookup--2026-10-29). Earlier entries below remain dated history.
 
 Prepared on 2026-10-28. Nothing was submitted, tagged, pushed, or released.
 
@@ -184,3 +184,49 @@ GRAPH_MAIN_SOURCE="$graph_frame_baseline/main.ts" node --test --test-name-patter
 ```
 
 Expected original result: exit 1, four failures and one passing control. Normal candidate invocation omits `GRAPH_MAIN_SOURCE`. These observations establish control/state ownership and instrumented cleanup, not native WebGL allocation/release, actual host event ordering, popout rendering or context-loss recovery. Existing live checks and dependency-cleanup limits remain open.
+
+## Bounded neighbor lookup — 2026-10-29
+
+agent decision 2026-10-28: build an ordered adjacency list once per graph load and skip neighbor lookup when no notes are alive, because actual-source counts reproduced a whole-link-list scan for every birth. Retain existing link order and the prior-batch `alive` boundary; this is a bounded scaling repair, not the future tier/planet design. One editing owner and a parallel read-only reviewer handled the local Mac job.
+
+`buildGraph` sorts notes by day/path and links by their larger endpoint, preserving metadata order for ties. Each endpoint's adjacency list preserves that exact link order. `neighbourOf` returns its first endpoint below the unchanged batch-start `alive`; same-day or skipped-day births within one `grow` cannot influence each other. Index construction is O(N + E) storage/work (N arrays, 2E endpoint entries), and one complete population makes N lookups visiting at most 2E incident entries. The index is replaced before loading another graph and cleared on destruction. D3 mutates newly mapped force-link objects, not the graph tuples used by the index. No simulation parameters/tick counts, activation prefixes, drawing, pop animation, visible-node count/capacity, controls or main-plugin ownership/error handling changed.
+
+### Persisted baseline and measurements
+
+The initial ten-case suite was written and run before changing `b5cf8ba:src/scene.ts`: **five failed, five positive behavior controls passed**. The final twelve-case replay against exported original source fails the same five cases, with seven passing controls. Four failures are operation bounds; the fifth checks the newly required derived-index lifecycle (absent in baseline), not a pre-existing disposal leak. Candidate focused results: **12/12 pass**. Evidence: [initial baseline](../tests/evidence/neighbor-lookup-baseline.txt), [final baseline replay](../tests/evidence/neighbor-lookup-baseline-replay.txt), [candidate](../tests/evidence/neighbor-lookup-candidate.txt).
+
+Finite graphs are undirected chains with N = 100 or 1,000 notes, E = N − 1 links `[i, i+1]` in index order, one group, and ten equally sized creation-day batches. `show` births all notes at once; playback calls actual `play`, then actual `countThrough`/`grow` through days 2–10.
+
+| N / E | Mode | Baseline whole-list neighbor visits | Candidate load tuple visits | Candidate whole-list neighbor visits | Candidate incident entries visited | Stored endpoint entries |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 100 / 99 | Initial show | 9,900 | 99 | 0 | 0 | 198 |
+| 100 / 99 | Ten-batch playback | 9,459 | 99 | 0 | 170 | 198 |
+| 1,000 / 999 | Initial show | 999,000 | 999 | 0 | 0 | 1,998 |
+| 1,000 / 999 | Ten-batch playback | 994,509 | 999 | 0 | 1,790 | 1,998 |
+
+Named instrumentation boundaries in `tests/neighbor-lookup.test.mjs`: numeric tuple reads from a Proxy around `graph.links` during actual `load` are `loadLinks`; tuple reads only inside actual `neighbourOf` are `neighborLinks`; numeric reads from wrapped adjacency lists inside that method are `incidentEntries`; method calls are `calls`. Graph construction, activation checks, force-link prefix copies, simulation, recoloring and drawing are excluded from those counters. Storage assertions count N lists and exactly 2E endpoints. The counters inspect production methods rather than a rewritten algorithm. No timing threshold is used; test-runner durations in evidence files are not benchmark evidence.
+
+Deterministic random input and fixed time compare candidate to the former full-list selection rule: multigroup initial anchors, isolated notes, reverse-oriented links, first eligible neighbor rather than lowest index, same-day and skipped-day batches, pop timestamps, activated links, mesh matrices/line positions and visible counts. Replay/replacement, empty graphs and destruction cover index ownership. The scheduler control preserves 120 initial relaxation ticks, one tick per frame, duration bounds, completion once and graph-length bounds. Force parameter assertions retain 3D, distance 30/strength 0.3, charge −40/distanceMax 600, and axis pull 0.06.
+
+Most new cases use a prototype fixture running actual `load/show/play/grow/advance/place/destroy` and real Three math/meshes with simulation, constructor/platform and UI boundaries doubled. Two additional controls run the installed d3-force-3d simulation, comparing exact resulting state after initial relaxation and after prior-batch nodes move through ticks; force endpoint mutation leaves graph tuples intact. They do not create a native WebGL context. Existing actual-constructor, installed TrackballControls and composed host/scene lifecycle suites remain the separate resource/error evidence.
+
+Replay without changing the checkout (temporary source and node_modules symlink are cleaned by Python):
+
+```sh
+python3 - <<'PYREPLAY'
+import os, pathlib, subprocess, tempfile
+with tempfile.TemporaryDirectory(prefix="graph-neighbor-baseline-") as temp:
+    root = pathlib.Path(temp)
+    (root / "scene.ts").write_bytes(subprocess.check_output(["git", "show", "b5cf8ba:src/scene.ts"]))
+    (root / "node_modules").symlink_to(pathlib.Path.cwd() / "node_modules", target_is_directory=True)
+    result = subprocess.run(["node", "--test", "tests/neighbor-lookup.test.mjs"],
+                            env={**os.environ, "GRAPH_SCENE_SOURCE": str(root / "scene.ts")})
+    raise SystemExit(result.returncode)
+PYREPLAY
+```
+
+Expected baseline exit 1 with five failures/seven passes; candidate invocation is `node --test tests/neighbor-lookup.test.mjs`.
+
+This bounds only neighbor indexing/selection, not total playback work: countThrough, force-node/link prefix updates, paintDots and rendering retain their existing costs. No improved native FPS, WebGL responsiveness, total-memory benchmark, minimum-version compatibility or directory approval is claimed. Existing live WebGL/popout/input/minimum/current-version checks remain open, mobile remains unsupported, and no denied app access was retried. No dependency, metadata, CSS or license change was needed. Nothing was installed, pushed, tagged, released or submitted.
+
+Final verification on macOS, Node 24.22.0 / npm 11.19.1: one `npm run qa` passed **130/130 tests** (118 retained + 12 new), zero-warning lint, strict TypeScript, production build and package checks. A separate in-memory build with the production configuration is byte-identical to tracked `main.js`; its diff matches only the adjacency/lookup changes. `git diff --check` passes. Independent read-only review accepted source, final tests and documentation with no blocker. The first test draft had a missing fixture brace; it was corrected before recording the real baseline and required no production change. No full QA was repeated.

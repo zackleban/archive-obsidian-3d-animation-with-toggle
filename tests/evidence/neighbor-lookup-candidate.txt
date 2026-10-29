@@ -1,0 +1,29 @@
+Source: candidate src/scene.ts (committed alongside this evidence)
+Command: node --test tests/neighbor-lookup.test.mjs
+Exit: 0
+Counters are operations, not timings. Runner durations below are not performance evidence. Trailing whitespace normalized.
+
+✔ bounded initial show: 100-note chain (3.065667ms)
+ℹ {"notes":100,"links":99,"batches":1,"loadLinks":99,"neighborLinks":0,"incidentEntries":0,"calls":100,"storedEntries":198}
+✔ bounded ten-batch playback: 100-note chain (1.082792ms)
+ℹ {"notes":100,"links":99,"batches":10,"loadLinks":99,"neighborLinks":0,"incidentEntries":170,"calls":100,"storedEntries":198}
+✔ bounded initial show: 1000-note chain (3.367166ms)
+ℹ {"notes":1000,"links":999,"batches":1,"loadLinks":999,"neighborLinks":0,"incidentEntries":0,"calls":1000,"storedEntries":1998}
+✔ bounded ten-batch playback: 1000-note chain (4.253584ms)
+ℹ {"notes":1000,"links":999,"batches":10,"loadLinks":999,"neighborLinks":0,"incidentEntries":1790,"calls":1000,"storedEntries":1998}
+✔ show exactly matches legacy placement, pop, link activation and drawing with deterministic input (1.491708ms)
+✔ playback exactly matches legacy placement, pop, link activation and drawing with deterministic input (0.806125ms)
+✔ skipped days exactly matches legacy placement, pop, link activation and drawing with deterministic input (0.575709ms)
+✔ graph ordering and first eligible neighbor preserve metadata tie order and prior-batch eligibility (5.319584ms)
+✔ replay and replacement release old indexes; destruction is inert and releases the current index (0.514958ms)
+✔ scheduled playback retains one tick per frame, duration bounds, completion and visible-node bound (0.69525ms)
+✔ installed simulation matches legacy initial relaxation (4.98175ms)
+✔ installed simulation matches legacy playback (0.620959ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.452458

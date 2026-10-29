@@ -30536,6 +30536,8 @@ var GraphScene = class {
     this.frame = 0;
     this.graph = null;
     this.nodes = [];
+    // Incident endpoints in graph link order, replaced on every load.
+    this.neighbours = [];
     this.anchors = [];
     this.sim = null;
     this.alive = 0;
@@ -30655,6 +30657,7 @@ var GraphScene = class {
     if (this.destroyed) return;
     this.destroyed = true;
     this.running = false;
+    this.neighbours = [];
     this.cleanup(() => this.el.win.cancelAnimationFrame(this.frame));
     this.cleanup(() => this.el.win.clearTimeout(this.openTimer));
     this.cleanup(() => this.el.win.clearTimeout(this.holdTimer));
@@ -30674,6 +30677,7 @@ var GraphScene = class {
     }
   }
   load(graph) {
+    this.neighbours = [];
     this.el.win.clearTimeout(this.openTimer);
     this.release();
     this.downAt = null;
@@ -30694,6 +30698,11 @@ var GraphScene = class {
       return new Vector3(Math.cos(turn) * r, y2, Math.sin(turn) * r).multiplyScalar(radius);
     });
     this.nodes = graph.notes.map((n) => ({ group: n.group }));
+    this.neighbours = graph.notes.map(() => []);
+    for (const [a2, b] of graph.links) {
+      this.neighbours[a2].push(b);
+      this.neighbours[b].push(a2);
+    }
     const sphere = new SphereGeometry(1, 16, 12);
     this.dots = new InstancedMesh(sphere, new MeshLambertMaterial(), Math.max(1, graph.notes.length));
     this.dots.count = 0;
@@ -30739,10 +30748,9 @@ var GraphScene = class {
     this.paintDots();
   }
   neighbourOf(i) {
-    const graph = this.graph;
-    for (const [a2, b] of graph.links) {
-      const other = a2 === i ? b : b === i ? a2 : -1;
-      if (other >= 0 && other < this.alive) return this.nodes[other];
+    if (this.alive === 0) return null;
+    for (const other of this.neighbours[i]) {
+      if (other < this.alive) return this.nodes[other];
     }
     return null;
   }

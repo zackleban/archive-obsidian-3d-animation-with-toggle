@@ -62,6 +62,8 @@ export class GraphScene {
 
 	private graph: VaultGraph | null = null;
 	private nodes: SimNode[] = [];
+	// Incident endpoints in graph link order, replaced on every load.
+	private neighbours: number[][] = [];
 	private anchors: THREE.Vector3[] = [];
 	private sim: ReturnType<typeof forceSimulation> | null = null;
 	private alive = 0;
@@ -182,6 +184,7 @@ export class GraphScene {
 		if (this.destroyed) return;
 		this.destroyed = true;
 		this.running = false;
+		this.neighbours = [];
 		this.cleanup(() => this.el.win.cancelAnimationFrame(this.frame));
 		this.cleanup(() => this.el.win.clearTimeout(this.openTimer));
 		this.cleanup(() => this.el.win.clearTimeout(this.holdTimer));
@@ -202,6 +205,7 @@ export class GraphScene {
 	}
 
 	private load(graph: VaultGraph) {
+		this.neighbours = [];
 		this.el.win.clearTimeout(this.openTimer);
 		this.release();
 		this.downAt = null;
@@ -224,6 +228,11 @@ export class GraphScene {
 			return new THREE.Vector3(Math.cos(turn) * r, y, Math.sin(turn) * r).multiplyScalar(radius);
 		});
 		this.nodes = graph.notes.map((n) => ({ group: n.group }));
+		this.neighbours = graph.notes.map(() => []);
+		for (const [a, b] of graph.links) {
+			this.neighbours[a].push(b);
+			this.neighbours[b].push(a);
+		}
 
 		const sphere = new THREE.SphereGeometry(1, 16, 12);
 		this.dots = new THREE.InstancedMesh(sphere, new THREE.MeshLambertMaterial(), Math.max(1, graph.notes.length));
@@ -282,10 +291,10 @@ export class GraphScene {
 	}
 
 	private neighbourOf(i: number): SimNode | null {
-		const graph = this.graph!;
-		for (const [a, b] of graph.links) {
-			const other = a === i ? b : b === i ? a : -1;
-			if (other >= 0 && other < this.alive) return this.nodes[other];
+		// alive advances only after the whole birth batch; same-batch notes stay ineligible.
+		if (this.alive === 0) return null;
+		for (const other of this.neighbours[i]) {
+			if (other < this.alive) return this.nodes[other];
 		}
 		return null;
 	}
